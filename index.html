@@ -184,49 +184,10 @@
             <p style="color: #6b7280; margin-bottom: 1.5rem">
               Connects to Hotel Management Group Service (Group 2, 4)
             </p>
-            <div class="grid">
-              <div
-                class="card"
-                style="border: 1px solid #e5e7eb; box-shadow: none"
-              >
-                <h4>Grand Luxury Hotel</h4>
-                <p>⭐⭐⭐⭐⭐ 5 Star Luxury</p>
-                <p>$250/night</p>
-                <button
-                  class="btn btn-secondary"
-                  onclick="alert('Reservation request sent to Hotel Management Group!')"
-                >
-                  Reserve Now
-                </button>
-              </div>
-              <div
-                class="card"
-                style="border: 1px solid #e5e7eb; box-shadow: none"
-              >
-                <h4>Cozy Inn</h4>
-                <p>⭐⭐⭐ Comfortable and Affordable</p>
-                <p>$80/night</p>
-                <button
-                  class="btn btn-secondary"
-                  onclick="alert('Reservation request sent to Hotel Management Group!')"
-                >
-                  Reserve Now
-                </button>
-              </div>
-              <div
-                class="card"
-                style="border: 1px solid #e5e7eb; box-shadow: none"
-              >
-                <h4>Business Suites</h4>
-                <p>⭐⭐⭐⭐ Perfect for Business Travel</p>
-                <p>$150/night</p>
-                <button
-                  class="btn btn-secondary"
-                  onclick="alert('Reservation request sent to Hotel Management Group!')"
-                >
-                  Reserve Now
-                </button>
-              </div>
+            
+            <!-- Dynamic List Container -->
+            <div id="hotel-list" class="grid">
+                 <p>Click "Hotels" to load data...</p>
             </div>
           </div>
         </div>
@@ -355,7 +316,7 @@
     <script src="js/app.js"></script>
     <script>
       // Tab switching logic
-      function switchTab(tabName) {
+      async function switchTab(tabName) {
         document
           .querySelectorAll(".tab-content")
           .forEach((el) => el.classList.add("hidden"));
@@ -364,11 +325,11 @@
         document
           .querySelectorAll(".tab-btn")
           .forEach((el) => el.classList.remove("active"));
-        event.target.classList.add("active");
+        const btn = document.querySelector(`button[onclick="switchTab('${tabName}')"]`);
+        if(btn) btn.classList.add('active');
 
-        if (tabName === "taxi") {
-          loadTaxis();
-        }
+        if (tabName === "taxi") loadTaxis();
+        else if (tabName === "hotel") loadHotels(); // FETCH FROM GROUP 2
       }
 
       function showSection(sectionId) {
@@ -376,6 +337,46 @@
           .querySelectorAll(".section")
           .forEach((el) => el.classList.add("hidden"));
         document.getElementById(sectionId).classList.remove("hidden");
+      }
+
+      // --- EXTERNAL INTEGRATION EXAMPLE (HOTELS) ---
+      async function loadHotels() {
+          const list = document.getElementById('hotel-list');
+          list.innerHTML = '<p>Loading hotels from Group 2...</p>';
+          
+          try {
+              // TODO: Replace this URL with the actual API from Group 2
+              // const res = await fetch('http://localhost/hotel_management/api/rooms.php');
+              // const hotels = await res.json();
+              
+              // MOCK DATA (Simulating what their API would return)
+              const hotels = [
+                  { name: 'Grand Luxury Hotel (From API)', rating: 5, price: 250 },
+                  { name: 'Cozy Inn (From API)', rating: 3, price: 80 },
+                  { name: 'Business Suites (From API)', rating: 4, price: 150 }
+              ];
+
+              // Simulate network delay
+              await new Promise(r => setTimeout(r, 500));
+
+              if (hotels.length === 0) {
+                  list.innerHTML = '<p>No hotels found.</p>';
+                  return;
+              }
+
+              list.innerHTML = hotels.map(h => `
+                  <div class="card" style="border: 1px solid #e5e7eb; box-shadow: none;">
+                      <h4>${h.name}</h4>
+                      <p>${'⭐'.repeat(h.rating)}</p>
+                      <p>$${h.price}/night</p>
+                      <button class="btn btn-secondary" onclick="alert('This would send a request to the Hotel Group API or redirect to their booking page')">Reserve Now</button>
+                  </div>
+              `).join('');
+
+          } catch (e) {
+              console.error(e);
+              list.innerHTML = '<p style="color:red">Error loading hotels from external service.</p>';
+          }
       }
 
       // Load Taxis
