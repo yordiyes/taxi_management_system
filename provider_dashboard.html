@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provider Dashboard - Taxi Service</title>
+    <link rel="stylesheet" href="css/premium.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h1>Provider Dashboard</h1>
+            <ul id="nav-list">
+                <li><a href="#" onclick="showSection('stats')">Overview</a></li>
+                <li><a href="#" onclick="showSection('services')">Services</a></li>
+                <li><a href="#" onclick="showSection('vehicles')">Vehicles</a></li>
+                <li><a href="#" onclick="showSection('drivers')">Drivers</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Stats Section -->
+        <div id="stats" class="section">
+            <h2>Overview</h2>
+            <div class="grid">
+                <div class="card stat-card">
+                    <div class="stat-value" id="total-users">-</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value" id="total-bookings">-</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value" id="total-services">-</div>
+                    <div class="stat-label">Active Services</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value" id="visitors-today">-</div>
+                    <div class="stat-label">Visitors Today</div>
+                </div>
+            </div>
+
+            <h3 class="mt-4">Recent Bookings</h3>
+            <div class="card">
+                <div id="booking-history">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Services Management -->
+        <div id="services" class="section hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Manage Services</h2>
+                <button class="btn btn-primary" onclick="openServiceModal()">+ Add New Service</button>
+            </div>
+            <div id="services-list" class="grid"></div>
+        </div>
+
+        <!-- Vehicle Management -->
+        <div id="vehicles" class="section hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Manage Vehicles</h2>
+                <button class="btn btn-primary" onclick="openVehicleModal()">+ Add New Vehicle</button>
+            </div>
+            <div id="vehicles-list" class="grid"></div>
+        </div>
+
+        <!-- Driver Management -->
+        <div id="drivers" class="section hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Manage Drivers</h2>
+                <button class="btn btn-primary" onclick="openDriverModal()">+ Add New Driver</button>
+            </div>
+            <div id="drivers-list" class="grid"></div>
+        </div>
+    </div>
+
+    <!-- Add Service Modal -->
+    <div id="service-modal" class="card"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid #e5e7eb;">
+        <h3>Add/Edit Service</h3>
+        <form id="service-form">
+            <input type="hidden" id="service-id">
+            <div class="form-group">
+                <label>Service Name</label>
+                <input type="text" id="service-name" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="service-desc" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Base Price ($)</label>
+                <input type="number" id="service-base" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label>Price per KM ($)</label>
+                <input type="number" id="service-km" step="0.01" required>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeServiceModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div id="vehicle-modal" class="card"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid #e5e7eb;">
+        <h3>Add/Edit Vehicle</h3>
+        <form id="vehicle-form">
+            <input type="hidden" id="vehicle-id">
+            <div class="form-group">
+                <label>Make</label>
+                <input type="text" id="vehicle-make" required>
+            </div>
+            <div class="form-group">
+                <label>Model</label>
+                <input type="text" id="vehicle-model" required>
+            </div>
+            <div class="form-group">
+                <label>License Plate</label>
+                <input type="text" id="vehicle-license" required>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select id="vehicle-type">
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Van">Van</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Capacity</label>
+                <input type="number" id="vehicle-capacity" required>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeVehicleModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Driver Modal -->
+    <div id="driver-modal" class="card"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid #e5e7eb;">
+        <h3>Add/Edit Driver</h3>
+        <form id="driver-form">
+            <input type="hidden" id="driver-id">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="driver-name" required>
+            </div>
+            <div class="form-group">
+                <label>License Number</label>
+                <input type="text" id="driver-license" required>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="text" id="driver-phone" required>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeDriverModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Auth Check
+        const user = getUser();
+        if (!user || (user.role !== 'admin' && user.role !== 'manager')) {
+            alert('Access Denied. Admins/Managers only.');
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStats();
+            loadServices();
+            loadVehicles();
+            loadDrivers();
+        });
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        async function loadStats() {
+            try {
+                const stats = await apiFetch('stats.php?action=stats');
+                document.getElementById('total-users').textContent = stats.total_users;
+                document.getElementById('total-bookings').textContent = stats.total_bookings;
+                document.getElementById('total-services').textContent = stats.total_services;
+                document.getElementById('visitors-today').textContent = stats.visitors_today;
+
+                const history = await apiFetch('stats.php?action=history');
+                const historyContainer = document.getElementById('booking-history');
+                if (history.length === 0) {
+                    historyContainer.innerHTML = '<p>No bookings found.</p>';
+                    return;
+                }
+
+                let html = `<table><thead><tr><th>User</th><th>Service</th><th>Pickup</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+                history.forEach(h => {
+                    html += `<tr>
+                        <td>${h.username || 'Unknown'}</td>
+                        <td>${h.service_name || 'N/A'}</td>
+                        <td>${h.pickup_location}</td>
+                        <td><span style="padding: 0.25rem 0.5rem; border-radius: 999px; background: #e0e7ff; color: #4338ca; font-size: 0.8rem;">${h.status}</span></td>
+                        <td>${h.created_at}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                historyContainer.innerHTML = html;
+            } catch (e) { console.error(e); }
+        }
+
+        // --- Services ---
+        async function loadServices() {
+            try {
+                const services = await apiFetch('services.php');
+                const list = document.getElementById('services-list');
+                list.innerHTML = services.map(s => `
+                    <div class="card">
+                        <h4>${s.name}</h4>
+                        <p>${s.description}</p>
+                        <p>Base: $${s.base_price} | Per KM: $${s.price_per_km}</p>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick='editService(${JSON.stringify(s)})'>Edit</button>
+                            <button class="btn btn-danger" onclick="deleteService(${s.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        const serviceModal = document.getElementById('service-modal');
+        function openServiceModal(service = null) {
+            serviceModal.style.display = 'block';
+            if (service) {
+                document.getElementById('service-id').value = service.id;
+                document.getElementById('service-name').value = service.name;
+                document.getElementById('service-desc').value = service.description;
+                document.getElementById('service-base').value = service.base_price;
+                document.getElementById('service-km').value = service.price_per_km;
+            } else {
+                document.getElementById('service-form').reset();
+                document.getElementById('service-id').value = '';
+            }
+        }
+        function closeServiceModal() { serviceModal.style.display = 'none'; }
+        function editService(s) { openServiceModal(s); }
+
+        document.getElementById('service-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('service-id').value;
+            const data = {
+                name: document.getElementById('service-name').value,
+                description: document.getElementById('service-desc').value,
+                base_price: document.getElementById('service-base').value,
+                price_per_km: document.getElementById('service-km').value
+            };
+            try {
+                if (id) await apiFetch(`services.php?id=${id}`, 'PUT', data);
+                else await apiFetch('services.php', 'POST', data);
+                closeServiceModal();
+                loadServices();
+                loadStats();
+            } catch (err) { alert(err.message); }
+        });
+
+        async function deleteService(id) {
+            if (!confirm('Are you sure?')) return;
+            try { await apiFetch(`services.php?id=${id}`, 'DELETE'); loadServices(); loadStats(); } catch (err) { alert(err.message); }
+        }
+
+        // --- Vehicles ---
+        async function loadVehicles() {
+            try {
+                const vehicles = await apiFetch('vehicles.php');
+                const list = document.getElementById('vehicles-list');
+                list.innerHTML = vehicles.map(v => `
+                    <div class="card">
+                        <h4>${v.make} ${v.model}</h4>
+                        <p>License: ${v.license_plate}</p>
+                        <p>Type: ${v.type} | Capacity: ${v.capacity}</p>
+                        <p>Status: ${v.status}</p>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick='editVehicle(${JSON.stringify(v)})'>Edit</button>
+                            <button class="btn btn-danger" onclick="deleteVehicle(${v.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        const vehicleModal = document.getElementById('vehicle-modal');
+        function openVehicleModal(vehicle = null) {
+            vehicleModal.style.display = 'block';
+            if (vehicle) {
+                document.getElementById('vehicle-id').value = vehicle.id;
+                document.getElementById('vehicle-make').value = vehicle.make;
+                document.getElementById('vehicle-model').value = vehicle.model;
+                document.getElementById('vehicle-license').value = vehicle.license_plate;
+                document.getElementById('vehicle-type').value = vehicle.type;
+                document.getElementById('vehicle-capacity').value = vehicle.capacity;
+            } else {
+                document.getElementById('vehicle-form').reset();
+                document.getElementById('vehicle-id').value = '';
+            }
+        }
+        function closeVehicleModal() { vehicleModal.style.display = 'none'; }
+        function editVehicle(v) { openVehicleModal(v); }
+
+        document.getElementById('vehicle-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('vehicle-id').value;
+            const data = {
+                make: document.getElementById('vehicle-make').value,
+                model: document.getElementById('vehicle-model').value,
+                license_plate: document.getElementById('vehicle-license').value,
+                type: document.getElementById('vehicle-type').value,
+                capacity: document.getElementById('vehicle-capacity').value
+            };
+            try {
+                if (id) await apiFetch(`vehicles.php?id=${id}`, 'PUT', data);
+                else await apiFetch('vehicles.php', 'POST', data);
+                closeVehicleModal();
+                loadVehicles();
+            } catch (err) { alert(err.message); }
+        });
+
+        async function deleteVehicle(id) {
+            if (!confirm('Are you sure?')) return;
+            try { await apiFetch(`vehicles.php?id=${id}`, 'DELETE'); loadVehicles(); } catch (err) { alert(err.message); }
+        }
+
+        // --- Drivers ---
+        async function loadDrivers() {
+            try {
+                const drivers = await apiFetch('drivers.php');
+                const list = document.getElementById('drivers-list');
+                list.innerHTML = drivers.map(d => `
+                    <div class="card">
+                        <h4>${d.name}</h4>
+                        <p>License: ${d.license_number}</p>
+                        <p>Phone: ${d.phone}</p>
+                        <p>Status: ${d.status}</p>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn btn-secondary" onclick='editDriver(${JSON.stringify(d)})'>Edit</button>
+                            <button class="btn btn-danger" onclick="deleteDriver(${d.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { console.error(e); }
+        }
+
+        const driverModal = document.getElementById('driver-modal');
+        function openDriverModal(driver = null) {
+            driverModal.style.display = 'block';
+            if (driver) {
+                document.getElementById('driver-id').value = driver.id;
+                document.getElementById('driver-name').value = driver.name;
+                document.getElementById('driver-license').value = driver.license_number;
+                document.getElementById('driver-phone').value = driver.phone;
+            } else {
+                document.getElementById('driver-form').reset();
+                document.getElementById('driver-id').value = '';
+            }
+        }
+        function closeDriverModal() { driverModal.style.display = 'none'; }
+        function editDriver(d) { openDriverModal(d); }
+
+        document.getElementById('driver-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('driver-id').value;
+            const data = {
+                name: document.getElementById('driver-name').value,
+                license_number: document.getElementById('driver-license').value,
+                phone: document.getElementById('driver-phone').value
+            };
+            try {
+                if (id) await apiFetch(`drivers.php?id=${id}`, 'PUT', data);
+                else await apiFetch('drivers.php', 'POST', data);
+                closeDriverModal();
+                loadDrivers();
+            } catch (err) { alert(err.message); }
+        });
+
+        async function deleteDriver(id) {
+            if (!confirm('Are you sure?')) return;
+            try { await apiFetch(`drivers.php?id=${id}`, 'DELETE'); loadDrivers(); } catch (err) { alert(err.message); }
+        }
+    </script>
+</body>
+
+</html>

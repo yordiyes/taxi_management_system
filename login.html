@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Global Tourism Hub</title>
+    <link rel="stylesheet" href="css/premium.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h1>Global Tourism Hub</h1>
+            <ul id="nav-list">
+                <!-- Nav items injected by JS -->
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="card" style="max-width: 400px; margin: 4rem auto;">
+            <h2 class="text-center">Welcome Back</h2>
+            <p class="text-center">Login to access your account</p>
+            <div id="message"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+            <p class="text-center mt-4">Don't have an account? <a href="register.html"
+                    style="color: var(--primary-color);">Register here</a></p>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', updateNav);
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const messageDiv = document.getElementById('message');
+
+            try {
+                const data = await apiFetch('auth.php?action=login', 'POST', { email, password });
+                setUser(data.user);
+                window.location.href = 'index.html';
+            } catch (error) {
+                messageDiv.innerHTML = `<div style="color: var(--danger); background: #fee2e2; padding: 0.75rem; border-radius: var(--radius); margin-bottom: 1rem;">${error.message}</div>`;
+            }
+        });
+    </script>
+</body>
+
+</html>

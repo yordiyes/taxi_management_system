@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Tourism Hub - Tourist Services</title>
+    <link rel="stylesheet" href="css/premium.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <h1>Global Tourism Hub</h1>
+        <ul id="nav-list">
+          <li><a href="#" onclick="showSection('home')">Home</a></li>
+          <li id="auth-link"><a href="login.html">Login</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="container">
+      <!-- Hero Section -->
+      <div id="home" class="section">
+        <div
+          class="card text-center"
+          style="
+            padding: 4rem 2rem;
+            background: linear-gradient(to right, #6366f1, #ec4899);
+            color: white;
+          "
+        >
+          <h2 style="color: white; font-size: 2.5rem">
+            Discover Your Next Adventure
+          </h2>
+          <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem">
+            One platform for all your travel needs.
+          </p>
+          <div style="margin-top: 2rem">
+            <button
+              onclick="showSection('services')"
+              class="btn"
+              style="background: white; color: #4f46e5; padding: 0.75rem 2rem"
+            >
+              Start Exploring
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Section -->
+      <div id="services" class="section hidden">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('browse')">
+            Browse Places
+          </button>
+          <button class="tab-btn" onclick="switchTab('tickets')">
+            Travel Tickets
+          </button>
+          <button class="tab-btn" onclick="switchTab('hotel')">Hotels</button>
+          <button class="tab-btn" onclick="switchTab('restaurant')">
+            Restaurants
+          </button>
+          <button class="tab-btn" onclick="switchTab('taxi')">Taxis</button>
+        </div>
+
+        <!-- Browse Places -->
+        <div id="tab-browse" class="tab-content">
+          <h3>Browse Popular Destinations</h3>
+          <div class="grid">
+            <div class="card">
+              <img
+                src="https://via.placeholder.com/400x200/6366f1/ffffff?text=Paris"
+                alt="Paris"
+                style="
+                  width: 100%;
+                  border-radius: var(--radius);
+                  margin-bottom: 1rem;
+                "
+              />
+              <h4>Paris, France</h4>
+              <p>
+                Experience the city of love and lights. Visit the Eiffel Tower,
+                Louvre Museum, and more.
+              </p>
+              <button
+                class="btn btn-primary"
+                onclick="alert('Detailed information about Paris would be provided by Tour Management Group')"
+              >
+                View Details
+              </button>
+            </div>
+            <div class="card">
+              <img
+                src="https://via.placeholder.com/400x200/ec4899/ffffff?text=Tokyo"
+                alt="Tokyo"
+                style="
+                  width: 100%;
+                  border-radius: var(--radius);
+                  margin-bottom: 1rem;
+                "
+              />
+              <h4>Tokyo, Japan</h4>
+              <p>
+                A perfect blend of ultramodern and traditional culture. Explore
+                temples, tech, and cuisine.
+              </p>
+              <button
+                class="btn btn-primary"
+                onclick="alert('Detailed information about Tokyo would be provided by Tour Management Group')"
+              >
+                View Details
+              </button>
+            </div>
+            <div class="card">
+              <img
+                src="https://via.placeholder.com/400x200/8b5cf6/ffffff?text=New+York"
+                alt="New York"
+                style="
+                  width: 100%;
+                  border-radius: var(--radius);
+                  margin-bottom: 1rem;
+                "
+              />
+              <h4>New York, USA</h4>
+              <p>
+                The city that never sleeps. Broadway, Central Park, Statue of
+                Liberty await you.
+              </p>
+              <button
+                class="btn btn-primary"
+                onclick="alert('Detailed information about New York would be provided by Tour Management Group')"
+              >
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Travel Tickets (Mock - Tour Management) -->
+        <div id="tab-tickets" class="tab-content hidden">
+          <div class="card">
+            <h3>Book Travel Tickets</h3>
+            <p style="color: #6b7280; margin-bottom: 1.5rem">
+              Connects to Tour Management Group Service (Group 1, 5, 9)
+            </p>
+            <form
+              onsubmit="event.preventDefault(); alert('Searching for tickets via Tour Management Service...');"
+            >
+              <div class="grid">
+                <div class="form-group">
+                  <label>From</label>
+                  <input type="text" placeholder="Departure City" required />
+                </div>
+                <div class="form-group">
+                  <label>To</label>
+                  <input type="text" placeholder="Destination City" required />
+                </div>
+                <div class="form-group">
+                  <label>Departure Date</label>
+                  <input type="date" required />
+                </div>
+                <div class="form-group">
+                  <label>Travel Type</label>
+                  <select>
+                    <option>Flight</option>
+                    <option>Train</option>
+                    <option>Bus</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-primary">Search Tickets</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Hotels (Mock - Hotel Management) -->
+        <div id="tab-hotel" class="tab-content hidden">
+          <div class="card">
+            <h3>Reserve Hotel Rooms</h3>
+            <p style="color: #6b7280; margin-bottom: 1.5rem">
+              Connects to Hotel Management Group Service (Group 2, 4)
+            </p>
+            <div class="grid">
+              <div
+                class="card"
+                style="border: 1px solid #e5e7eb; box-shadow: none"
+              >
+                <h4>Grand Luxury Hotel</h4>
+                <p>⭐⭐⭐⭐⭐ 5 Star Luxury</p>
+                <p>$250/night</p>
+                <button
+                  class="btn btn-secondary"
+                  onclick="alert('Reservation request sent to Hotel Management Group!')"
+                >
+                  Reserve Now
+                </button>
+              </div>
+              <div
+                class="card"
+                style="border: 1px solid #e5e7eb; box-shadow: none"
+              >
+                <h4>Cozy Inn</h4>
+                <p>⭐⭐⭐ Comfortable and Affordable</p>
+                <p>$80/night</p>
+                <button
+                  class="btn btn-secondary"
+                  onclick="alert('Reservation request sent to Hotel Management Group!')"
+                >
+                  Reserve Now
+                </button>
+              </div>
+              <div
+                class="card"
+                style="border: 1px solid #e5e7eb; box-shadow: none"
+              >
+                <h4>Business Suites</h4>
+                <p>⭐⭐⭐⭐ Perfect for Business Travel</p>
+                <p>$150/night</p>
+                <button
+                  class="btn btn-secondary"
+                  onclick="alert('Reservation request sent to Hotel Management Group!')"
+                >
+                  Reserve Now
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Restaurants (Mock - Restaurant Management) -->
+        <div id="tab-restaurant" class="tab-content hidden">
+          <div class="card">
+            <h3>Book Restaurant Tables</h3>
+            <p style="color: #6b7280; margin-bottom: 1.5rem">
+              Connects to Restaurant Management Group Service (Group 3, 7)
+            </p>
+            <div class="grid">
+              <div
+                class="card"
+                style="border: 1px solid #e5e7eb; box-shadow: none"
+              >
+                <h4>The Gourmet Kitchen</h4>
+                <p>🍽️ Fine Dining Experience</p>
+                <p>Cuisine: French</p>
+                <button
+                  class="btn btn-secondary"
+                  onclick="alert('Booking request sent to Restaurant Management Group!')"
+                >
+                  Book Table
+                </button>
+              </div>
+              <div
+                class="card"
+                style="border: 1px solid #e5e7eb; box-shadow: none"
+              >
+                <h4>Sushi Paradise</h4>
+                <p>🍣 Authentic Japanese Cuisine</p>
+                <p>Cuisine: Japanese</p>
+                <button
+                  class="btn btn-secondary"
+                  onclick="alert('Booking request sent to Restaurant Management Group!')"
+                >
+                  Book Table
+                </button>
+              </div>
+              <div
+                class="card"
+                style="border: 1px solid #e5e7eb; box-shadow: none"
+              >
+                <h4>Mama's Trattoria</h4>
+                <p>🍝 Traditional Italian Food</p>
+                <p>Cuisine: Italian</p>
+                <button
+                  class="btn btn-secondary"
+                  onclick="alert('Booking request sent to Restaurant Management Group!')"
+                >
+                  Book Table
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Taxis (Real Implementation - Taxi Service Management) -->
+        <div id="tab-taxi" class="tab-content hidden">
+          <div class="card">
+            <h3>Order a Taxi</h3>
+            <p style="color: #6b7280; margin-bottom: 1.5rem">
+              Real Taxi Service Management (Group 4, 8)
+            </p>
+            <form id="taxi-booking-form">
+              <input type="hidden" id="service-id-input" />
+
+              <div
+                id="selected-service-display"
+                style="
+                  display: none;
+                  background: #e0e7ff;
+                  color: #4338ca;
+                  padding: 1rem;
+                  border-radius: var(--radius);
+                  margin-bottom: 1rem;
+                  border: 1px solid #c7d2fe;
+                "
+              >
+                <!-- Filled by JS -->
+              </div>
+
+              <div class="grid">
+                <div class="form-group">
+                  <label>Pickup Location</label>
+                  <input
+                    type="text"
+                    id="pickup"
+                    required
+                    placeholder="e.g. Airport Terminal 1"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Dropoff Location</label>
+                  <input
+                    type="text"
+                    id="dropoff"
+                    required
+                    placeholder="e.g. Grand Hotel Downtown"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Pickup Date & Time</label>
+                  <input type="datetime-local" id="time" required />
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="margin-top: 1rem"
+              >
+                Book Taxi Ride
+              </button>
+            </form>
+          </div>
+
+          <h3>Available Taxi Services</h3>
+          <div id="taxi-list" class="grid">
+            <!-- Loaded via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+      // Tab switching logic
+      function switchTab(tabName) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById("tab-" + tabName).classList.remove("hidden");
+
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((el) => el.classList.remove("active"));
+        event.target.classList.add("active");
+
+        if (tabName === "taxi") {
+          loadTaxis();
+        }
+      }
+
+      function showSection(sectionId) {
+        document
+          .querySelectorAll(".section")
+          .forEach((el) => el.classList.add("hidden"));
+        document.getElementById(sectionId).classList.remove("hidden");
+      }
+
+      // Load Taxis
+      async function loadTaxis() {
+        try {
+          const services = await apiFetch("services.php");
+          const list = document.getElementById("taxi-list");
+          if (services.length === 0) {
+            list.innerHTML = "<p>No taxi services available at the moment.</p>";
+            return;
+          }
+          list.innerHTML = services
+            .map(
+              (s) => `
+                    <div class="card">
+                        <h4>${s.name}</h4>
+                        <p>${s.description}</p>
+                        <p><strong>Base Price:</strong> $${s.base_price}</p>
+                        <p><strong>Per KM:</strong> $${s.price_per_km}</p>
+                        <button class="btn btn-primary" onclick="prefillTaxi('${s.id}', '${s.name}')">Select This Taxi</button>
+                    </div>
+                `
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+          document.getElementById("taxi-list").innerHTML =
+            "<p>Error loading taxi services.</p>";
+        }
+      }
+
+      function prefillTaxi(id, name) {
+        // Set hidden input
+        document.getElementById("service-id-input").value = id;
+
+        // Update visual indicator
+        const display = document.getElementById("selected-service-display");
+        display.style.display = "block";
+        display.innerHTML = `<strong>Selected Service:</strong> ${name} <button onclick="clearSelection()" style="float:right; background:none; border:none; color:currentColor; cursor:pointer;">&times; Change</button>`;
+
+        // Scroll to form
+        document
+          .getElementById("taxi-booking-form")
+          .scrollIntoView({ behavior: "smooth" });
+
+        // Focus first field
+        document.getElementById("pickup").focus();
+      }
+
+      function clearSelection() {
+        document.getElementById("service-id-input").value = "";
+        document.getElementById("selected-service-display").style.display =
+          "none";
+      }
+
+      // Taxi Booking
+      document
+        .getElementById("taxi-booking-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const user = getUser();
+          if (!user) {
+            alert("Please login to book a taxi.");
+            window.location.href = "login.html";
+            return;
+          }
+
+          const data = {
+            user_id: user.id,
+            service_id: document.getElementById("service-id-input").value,
+            pickup_location: document.getElementById("pickup").value,
+            dropoff_location: document.getElementById("dropoff").value,
+            pickup_time: document.getElementById("time").value,
+          };
+
+          if (!data.service_id) {
+            alert("Please select a taxi service from the list below.");
+            return;
+          }
+
+          try {
+            await apiFetch("bookings.php", "POST", data);
+            alert(
+              "Taxi booked successfully! You will receive confirmation shortly."
+            );
+            e.target.reset();
+            clearSelection();
+          } catch (err) {
+            alert("Booking failed: " + err.message);
+          }
+        });
+
+      // Check Auth and update nav
+      const user = getUser();
+      if (user) {
+        let navHtml =
+          '<li><a href="#" onclick="showSection(\'home\')">Home</a></li>';
+        if (user.role === "admin" || user.role === "manager") {
+          navHtml +=
+            '<li><a href="provider_dashboard.html">Provider Dashboard</a></li>';
+        }
+        navHtml += `<li><a href="#" onclick="logout()">Logout (${user.username})</a></li>`;
+        document.getElementById("nav-list").innerHTML = navHtml;
+      }
+    </script>
+  </body>
+</html>

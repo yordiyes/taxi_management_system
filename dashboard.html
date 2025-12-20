@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Taxi Service</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <h1>Taxi Service Manager</h1>
+            <ul id="nav-list">
+                <!-- Nav items injected by JS -->
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Dashboard</h2>
+        <div id="dashboard-content">
+            <!-- Content loaded via JS -->
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNav();
+            const user = getUser();
+            if (!user || (user.role !== 'admin' && user.role !== 'manager')) {
+                window.location.href = 'login.html';
+                return;
+            }
+            loadDashboard();
+        });
+
+        async function loadDashboard() {
+            const content = document.getElementById('dashboard-content');
+            content.innerHTML = `
+                <div class="card">
+                    <h3>Manage Vehicles</h3>
+                    <form id="add-vehicle-form" style="margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                        <h4>Add New Vehicle</h4>
+                        <div class="form-group"><input type="text" id="v-make" placeholder="Make" required></div>
+                        <div class="form-group"><input type="text" id="v-model" placeholder="Model" required></div>
+                        <div class="form-group"><input type="text" id="v-plate" placeholder="License Plate" required></div>
+                        <div class="form-group"><input type="text" id="v-type" placeholder="Type (e.g. Sedan)" required></div>
+                        <div class="form-group"><input type="number" id="v-capacity" placeholder="Capacity" required></div>
+                        <button type="submit" class="btn btn-primary">Add Vehicle</button>
+                    </form>
+                    <div id="vehicle-list"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Manage Drivers</h3>
+                    <form id="add-driver-form" style="margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                        <h4>Add New Driver</h4>
+                        <div class="form-group"><input type="text" id="d-name" placeholder="Name" required></div>
+                        <div class="form-group"><input type="text" id="d-license" placeholder="License Number" required></div>
+                        <div class="form-group"><input type="text" id="d-phone" placeholder="Phone" required></div>
+                        <div class="form-group">
+                            <select id="d-vehicle">
+                                <option value="">Select Vehicle (Optional)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Driver</button>
+                    </form>
+                    <div id="driver-list"></div>
+                </div>
+            `;
+
+            loadVehicles();
+            loadDrivers();
+
+            document.getElementById('add-vehicle-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const make = document.getElementById('v-make').value;
+                const model = document.getElementById('v-model').value;
+                const license_plate = document.getElementById('v-plate').value;
+                const type = document.getElementById('v-type').value;
+                const capacity = document.getElementById('v-capacity').value;
+
+                try {
+                    await apiFetch('taxis.php', 'POST', { make, model, license_plate, type, capacity });
+                    loadVehicles();
+                    e.target.reset();
+                } catch (err) { alert(err.message); }
+            });
+
+            document.getElementById('add-driver-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('d-name').value;
+                const license_number = document.getElementById('d-license').value;
+                const phone = document.getElementById('d-phone').value;
+                const vehicle_id = document.getElementById('d-vehicle').value;
+
+                try {
+                    await apiFetch('drivers.php', 'POST', { name, license_number, phone, vehicle_id: vehicle_id || null });
+                    loadDrivers();
+                    e.target.reset();
+                } catch (err) { alert(err.message); }
+            });
+        }
+
+        async function loadVehicles() {
+            try {
+                const vehicles = await apiFetch('taxis.php');
+                const list = document.getElementById('vehicle-list');
+                const select = document.getElementById('d-vehicle');
+
+                // Update select dropdown
+                let options = '<option value="">Select Vehicle (Optional)</option>';
+                vehicles.forEach(v => {
+                    options += `<option value="${v.id}">${v.make} ${v.model} (${v.license_plate})</option>`;
+                });
+                if (select) select.innerHTML = options;
+
+                // Update list
+                let html = `<table><thead><tr><th>ID</th><th>Make/Model</th><th>Plate</th><th>Status</th><th>Action</th></tr></thead><tbody>`;
+                vehicles.forEach(v => {
+                    html += `<tr>
+                        <td>${v.id}</td>
+                        <td>${v.make} ${v.model}</td>
+                        <td>${v.license_plate}</td>
+                        <td>${v.status}</td>
+                        <td><button class="btn btn-danger" onclick="deleteVehicle(${v.id})">Delete</button></td>
+                    </tr>`;
+                });
+                html += `</tbody></table>`;
+                list.innerHTML = html;
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadDrivers() {
+            try {
+                const drivers = await apiFetch('drivers.php');
+                const list = document.getElementById('driver-list');
+                let html = `<table><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Vehicle</th><th>Status</th><th>Action</th></tr></thead><tbody>`;
+                drivers.forEach(d => {
+                    html += `<tr>
+                        <td>${d.id}</td>
+                        <td>${d.name}</td>
+                        <td>${d.phone}</td>
+                        <td>${d.make ? d.make + ' ' + d.model : 'None'}</td>
+                        <td>${d.status}</td>
+                        <td><button class="btn btn-danger" onclick="deleteDriver(${d.id})">Delete</button></td>
+                    </tr>`;
+                });
+                html += `</tbody></table>`;
+                list.innerHTML = html;
+            } catch (err) { console.error(err); }
+        }
+
+        async function deleteVehicle(id) {
+            if (confirm('Delete this vehicle?')) {
+                try {
+                    await apiFetch('taxis.php', 'DELETE', { id });
+                    loadVehicles();
+                } catch (err) { alert(err.message); }
+            }
+        }
+
+        async function deleteDriver(id) {
+            if (confirm('Delete this driver?')) {
+                try {
+                    await apiFetch('drivers.php', 'DELETE', { id });
+                    loadDrivers();
+                } catch (err) { alert(err.message); }
+            }
+        }
+    </script>
+</body>
+
+</html>
