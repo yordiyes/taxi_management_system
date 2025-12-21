@@ -10,13 +10,23 @@ require_once 'db.php';
 $database = new Database();
 $db = $database->getConnection();
 
+require_once 'config.php'; // Ensure config is loaded for API_KEY
+
 $method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"));
 
-// Enforce Session Login for ALL booking actions
-if (!isset($_SESSION['user_id'])) {
+// Auth Check: Session OR API Key
+$is_api_call = false;
+$headers = getallheaders();
+$api_key = isset($headers['X-API-KEY']) ? $headers['X-API-KEY'] : (isset($_GET['api_key']) ? $_GET['api_key'] : null);
+
+if ($api_key === API_KEY) {
+    $is_api_call = true;
+} elseif (isset($_SESSION['user_id'])) {
+    // Standard session login
+} else {
     http_response_code(401);
-    echo json_encode(array("message" => "Unauthorized. Please login."));
+    echo json_encode(array("message" => "Unauthorized. Please login or provide valid API Key."));
     exit();
 }
 
@@ -63,8 +73,17 @@ switch($method) {
             $query = "INSERT INTO bookings SET user_id=:user_id, service_id=:service_id, pickup_location=:pickup_location, dropoff_location=:dropoff_location, pickup_time=:pickup_time, status='pending'";
             $stmt = $db->prepare($query);
 
-            // Use Session User ID
-            $user_id = $_SESSION['user_id'];
+            // Determine User ID
+            if ($is_api_call) {
+                if (empty($data->user_id)) {
+                    http_response_code(400);
+                    echo json_encode(array("message" => "External Booking requires user_id."));
+                    exit();
+                }
+                $user_id = $data->user_id;
+            } else {
+                $user_id = $_SESSION['user_id'];
+            }
             $service_id = isset($data->service_id) ? $data->service_id : null;
             $data->pickup_location = htmlspecialchars(strip_tags($data->pickup_location));
             $data->dropoff_location = htmlspecialchars(strip_tags($data->dropoff_location));
