@@ -206,19 +206,39 @@
                     return;
                 }
 
-                let html = `<table><thead><tr><th>User</th><th>Service</th><th>Pickup</th><th>Status</th><th>Date</th></tr></thead><tbody>`;
+                let html = `<table><thead><tr><th>User</th><th>Service</th><th>Pickup</th><th>Status</th><th>Action</th><th>Date</th></tr></thead><tbody>`;
                 history.forEach(h => {
+                    let actionBtn = '';
+                    if (h.status === 'pending') {
+                        actionBtn = `<button class="btn btn-sm btn-primary" onclick="updateBookingStatus(${h.id}, 'confirmed')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Approve</button>`;
+                    } else if (h.status === 'confirmed') {
+                        actionBtn = `<button class="btn btn-sm btn-success" onclick="updateBookingStatus(${h.id}, 'completed')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; background-color: #10b981; border: none; color: white; cursor: pointer;">Complete</button>`;
+                    } else {
+                        actionBtn = '<span style="color: #6b7280; font-size: 0.8rem;">Done</span>';
+                    }
+
                     html += `<tr>
                         <td>${h.username || 'Unknown'}</td>
                         <td>${h.service_name || 'N/A'}</td>
                         <td>${h.pickup_location}</td>
                         <td><span style="padding: 0.25rem 0.5rem; border-radius: 999px; background: #e0e7ff; color: #4338ca; font-size: 0.8rem;">${h.status}</span></td>
+                        <td>${actionBtn}</td>
                         <td>${h.created_at}</td>
                     </tr>`;
                 });
                 html += '</tbody></table>';
                 historyContainer.innerHTML = html;
             } catch (e) { console.error(e); }
+        }
+
+        async function updateBookingStatus(id, status) {
+            if(!confirm(`Mark booking as ${status}?`)) return;
+            try {
+                await apiFetch(`bookings.php?id=${id}`, 'PUT', { status });
+                loadStats(); // Reload table
+            } catch(e) {
+                alert(e.message);
+            }
         }
 
         // --- Services ---

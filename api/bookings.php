@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Methods: GET, POST");
+header("Access-Control-Allow-Methods: GET, POST, PUT");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
@@ -82,6 +82,36 @@ switch($method) {
             } else {
                 http_response_code(503);
                 echo json_encode(array("message" => "Unable to create booking."));
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(array("message" => "Incomplete data."));
+        }
+        break;
+    case 'PUT':
+        // Protected: Only Admin/Manager
+        if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'manager')) {
+            http_response_code(403);
+            echo json_encode(array("message" => "Access Denied."));
+            exit();
+        }
+
+        $id = isset($_GET['id']) ? $_GET['id'] : null;
+
+        if($id && !empty($data->status)) {
+            $query = "UPDATE bookings SET status=:status WHERE id=:id";
+            $stmt = $db->prepare($query);
+
+            $data->status = htmlspecialchars(strip_tags($data->status));
+
+            $stmt->bindParam(":status", $data->status);
+            $stmt->bindParam(":id", $id);
+
+            if($stmt->execute()) {
+                echo json_encode(array("message" => "Booking updated."));
+            } else {
+                http_response_code(503);
+                echo json_encode(array("message" => "Unable to update booking."));
             }
         } else {
             http_response_code(400);
