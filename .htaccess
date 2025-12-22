@@ -1,8 +1,8 @@
 # Handle CORS for API
 <IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header set Access-Control-Allow-Headers "Content-Type, X-API-KEY, Authorization, X-Requested-With"
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, X-API-KEY, Authorization, X-Requested-With"
 </IfModule>
 
 # Handle Preflight OPTIONS requests

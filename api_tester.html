@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple API Partner Tester</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; line-height: 1.5; }
+        .box { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 20px; background: #f9f9f9; }
+        input, button { padding: 10px; margin: 5px 0; display: block; width: 100%; box-sizing: border-box; }
+        button { background: #4f46e5; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #4338ca; }
+        pre { background: #eee; padding: 15px; border-radius: 4px; overflow-x: auto; font-size: 13px; min-height: 50px; }
+        h3 { margin-top: 0; }
+        .label { font-size: 12px; font-weight: bold; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Partner API Sandbox</h1>
+    <p>Use this simple page to test the Taxi API from any browser tab.</p>
+
+    <div class="box">
+        <h3>1. Configuration</h3>
+        <div class="label">API BASE URL</div>
+        <input type="text" id="baseUrl" value="https://taxi-system.infinityfreeapp.com/api">
+        <div class="label">API KEY</div>
+        <input type="text" id="apiKey" value="TAXI_GROUP_SECURE_KEY_2024">
+    </div>
+
+    <div class="box">
+        <h3>2. Get All Services (Public)</h3>
+        <button onclick="test('/services.php', 'GET')">Fetch Services</button>
+    </div>
+
+    <div class="box">
+        <h3>3. Seamless Booking (Partner Integration)</h3>
+        <div class="label">USER EMAIL</div>
+        <input type="email" id="bookEmail" value="tester@gmail.com">
+        <div class="label">PICKUP LOCATION</div>
+        <input type="text" id="pickup" value="Central Mall">
+        <div class="label">DROPOFF LOCATION</div>
+        <input type="text" id="dropoff" value="Airport">
+        <div class="label">PICKUP TIME (YYYY-MM-DD HH:MM:SS)</div>
+        <input type="text" id="time" value="2025-01-01 12:00:00">
+        <button onclick="bookTaxi()">Order Taxi Seamlessly</button>
+    </div>
+
+    <div class="box">
+        <h3>4. View Bookings by Email</h3>
+        <div class="label">USER EMAIL</div>
+        <input type="email" id="viewEmail" value="tester@gmail.com">
+        <button onclick="viewBookings()">Fetch History</button>
+    </div>
+
+    <div class="box" style="background: #333; color: #fff;">
+        <h3>Live Response Output</h3>
+        <pre id="output" style="background: #222; color: #0f0; border: 1px solid #444;">// Results will appear here...</pre>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+
+        async function test(path, method, body = null) {
+            output.innerText = "// Sending request...";
+            const url = document.getElementById('baseUrl').value + path;
+            const key = document.getElementById('apiKey').value;
+
+            try {
+                const options = {
+                    method: method,
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'X-API-KEY': key
+                    }
+                };
+                if (method === 'GET' && path.includes('.php')) {
+                    // Inject key into URL for GET if needed
+                    const finalUrl = new URL(url);
+                    finalUrl.searchParams.append('api_key', key);
+                    var reqUrl = finalUrl.toString();
+                } else if (body) {
+                    options.body = JSON.stringify(body);
+                    var reqUrl = url;
+                } else {
+                    var reqUrl = url;
+                }
+
+                const response = await fetch(reqUrl, options);
+                const data = await response.json();
+                output.innerText = JSON.stringify(data, null, 2);
+            } catch (err) {
+                output.innerText = "Error: " + err.message + "\nCheck browser console for details (F12).";
+            }
+        }
+
+        function bookTaxi() {
+            const body = {
+                email: document.getElementById('bookEmail').value,
+                pickup_location: document.getElementById('pickup').value,
+                dropoff_location: document.getElementById('dropoff').value,
+                pickup_time: document.getElementById('time').value
+            };
+            test('/bookings.php', 'POST', body);
+        }
+
+        function viewBookings() {
+            const email = document.getElementById('viewEmail').value;
+            test('/bookings.php?email=' + encodeURIComponent(email), 'GET');
+        }
+    </script>
+</body>
+</html>
