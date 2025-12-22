@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT");
 header("Access-Control-Max-Age: 3600");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, X-API-KEY");
 
 require_once 'db.php';
 
@@ -13,6 +13,10 @@ $db = $database->getConnection();
 require_once 'config.php'; // Ensure config is loaded for API_KEY
 
 $method = $_SERVER['REQUEST_METHOD'];
+if ($method == "OPTIONS") {
+    http_response_code(200);
+    exit();
+}
 $data = json_decode(file_get_contents("php://input"));
 
 // Auth Check: Session OR API Key
@@ -33,34 +37,46 @@ if ($api_key === API_KEY) {
 switch($method) {
     case 'GET':
         // If Admin/Manager, can view all or filter by user_id
+        // Determine filtering
+        $filter_user_id = null;
         if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'manager') {
             if (isset($_GET['user_id'])) {
-                $query = "SELECT b.*, s.name as service_name, d.name as driver_name, u.username 
-                          FROM bookings b 
-                          LEFT JOIN services s ON b.service_id = s.id 
-                          LEFT JOIN drivers d ON b.driver_id = d.id 
-                          LEFT JOIN users u ON b.user_id = u.id 
-                          WHERE b.user_id = :user_id ORDER BY b.created_at DESC";
-                $stmt = $db->prepare($query);
-                $stmt->bindParam(":user_id", $_GET['user_id']);
-            } else {
-                $query = "SELECT b.*, u.username, s.name as service_name, d.name as driver_name 
-                          FROM bookings b 
-                          LEFT JOIN users u ON b.user_id = u.id 
-                          LEFT JOIN services s ON b.service_id = s.id
-                          LEFT JOIN drivers d ON b.driver_id = d.id
-                          ORDER BY b.created_at DESC";
-                $stmt = $db->prepare($query);
+                $filter_user_id = $_GET['user_id'];
+            } elseif (isset($_GET['email'])) {
+                // Lookup by email if provided
+                $u_stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+                $u_stmt->execute([$_GET['email']]);
+                $u_row = $u_stmt->fetch(PDO::FETCH_ASSOC);
+                $filter_user_id = $u_row ? $u_row['id'] : -1; // -1 ensures no results if user not found
             }
-        } else {
-            // Customer: View ONLY their own bookings
-            $query = "SELECT b.*, s.name as service_name, d.name as driver_name 
+        } elseif (isset($_SESSION['user_id'])) {
+            $filter_user_id = $_SESSION['user_id'];
+        } elseif ($is_api_call && isset($_GET['email'])) {
+            // External API call filtering by email
+            $u_stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
+            $u_stmt->execute([$_GET['email']]);
+            $u_row = $u_stmt->fetch(PDO::FETCH_ASSOC);
+            $filter_user_id = $u_row ? $u_row['id'] : -1;
+        }
+
+        if ($filter_user_id !== null) {
+            $query = "SELECT b.*, s.name as service_name, d.name as driver_name, u.username 
                       FROM bookings b 
                       LEFT JOIN services s ON b.service_id = s.id 
                       LEFT JOIN drivers d ON b.driver_id = d.id 
-                      WHERE user_id = :user_id ORDER BY b.created_at DESC";
+                      LEFT JOIN users u ON b.user_id = u.id 
+                      WHERE b.user_id = :user_id ORDER BY b.created_at DESC";
             $stmt = $db->prepare($query);
-            $stmt->bindParam(":user_id", $_SESSION['user_id']);
+            $stmt->bindParam(":user_id", $filter_user_id);
+        } else {
+            // Admin/Manager view all
+            $query = "SELECT b.*, u.username, s.name as service_name, d.name as driver_name 
+                      FROM bookings b 
+                      LEFT JOIN users u ON b.user_id = u.id 
+                      LEFT JOIN services s ON b.service_id = s.id
+                      LEFT JOIN drivers d ON b.driver_id = d.id
+                      ORDER BY b.created_at DESC";
+            $stmt = $db->prepare($query);
         }
         
         $stmt->execute();
@@ -75,12 +91,36 @@ switch($method) {
 
             // Determine User ID
             if ($is_api_call) {
-                if (empty($data->user_id)) {
+                if (!empty($data->user_id)) {
+                    $user_id = $data->user_id;
+                } elseif (!empty($data->email)) {
+                    // SEAMLESS INTEGRATION: Find or create user by email
+                    $check_user = "SELECT id FROM users WHERE email = ?";
+                    $check_stmt = $db->prepare($check_user);
+                    $check_stmt->bindParam(1, $data->email);
+                    $check_stmt->execute();
+                    $user_row = $check_stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($user_row) {
+                        $user_id = $user_row['id'];
+                    } else {
+                        // Auto-register a minimal user account
+                        $new_username = explode('@', $data->email)[0] . '_' . rand(100, 999);
+                        $reg_query = "INSERT INTO users SET username=:username, email=:email, password=:password, role='customer'";
+                        $reg_stmt = $db->prepare($reg_query);
+                        $dummy_pass = password_hash(bin2hex(random_bytes(8)), PASSWORD_BCRYPT);
+                        
+                        $reg_stmt->bindParam(":username", $new_username);
+                        $reg_stmt->bindParam(":email", $data->email);
+                        $reg_stmt->bindParam(":password", $dummy_pass);
+                        $reg_stmt->execute();
+                        $user_id = $db->lastInsertId();
+                    }
+                } else {
                     http_response_code(400);
-                    echo json_encode(array("message" => "External Booking requires user_id."));
+                    echo json_encode(array("message" => "External Booking requires user_id or email."));
                     exit();
                 }
-                $user_id = $data->user_id;
             } else {
                 $user_id = $_SESSION['user_id'];
             }
