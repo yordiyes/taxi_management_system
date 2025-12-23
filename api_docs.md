@@ -1,89 +1,161 @@
-# Taxi Management System: Partner Integration Guide
+# Taxi Management System API Documentation
 
-Welcome to the Taxi Management System API. This documentation is dedicated to **external project groups** (Restaurants, Hotels, Events, etc.) looking to integrate our taxi booking services into their own applications.
+**For Groups 1, 2, 3, 5, 7, 9**
 
-**Base URL:** `https://taxi-system.infinityfreeapp.com/api`
+This documentation outlines how to consume the **Taxi Service** provided by Group 4 & 8.
 
----
-
-## Group Integration & Authentication
-
-To ensure seamless service-to-service communication, all requests from your group should follow these rules:
-
-The API supports two methods of authentication:
-
-1.  **Session-based:** Standard web application session (Cookie-based).
-2.  **API Key:** For external integrations, use the `X-API-KEY` header or `api_key` query parameter.
-    - **API Key:** `TAXI_GROUP_SECURE_KEY_2024`
+**Base URL:** `https://taxi-system.infinityfreeapp.com/api` (or `http://localhost/taxi_management_system/api` for local dev)
 
 ---
 
-## Endpoints
+## 1. Authentication
 
-### 1. Authentication (`auth.php`)
+All API requests (except public GET requests) require authentication.
 
-| Method | Action                  | Description                | Parameters (JSON)                                                                   |
-| :----- | :---------------------- | :------------------------- | :---------------------------------------------------------------------------------- |
-| POST   | `?action=register`      | Register a new user        | `username`, `email`, `password`, `role` (optional: 'customer', 'driver', 'manager') |
-| POST   | `?action=login`         | Login and start session    | `email`, `password`                                                                 |
-| POST   | `?action=logout`        | Terminate session          | None                                                                                |
-| GET    | `?action=check_session` | Check current user session | None                                                                                |
+### **Option A: API Key (Server-to-Server)**
 
----
+Use this for backend integration (e.g., when the Hotel Group server needs to book a taxi for a guest). You can use **either** method below:
 
-### 2. Services (`services.php`)
+1.  **Header (Recommended):** `X-API-KEY: TAXI_GROUP_SECURE_KEY_2024`
+2.  **Query Parameter:** `?api_key=TAXI_GROUP_SECURE_KEY_2024` (Useful for simple GET requests)
 
-| Method | Description                             | Parameters                                                            |
-| :----- | :-------------------------------------- | :-------------------------------------------------------------------- |
-| GET    | List all taxi services                  | None                                                                  |
-| GET    | Get specific service                    | `?id={service_id}`                                                    |
-| POST   | Create new service (Admin/Manager only) | `name`, `description`, `base_price`, `price_per_km`                   |
-| PUT    | Update service (Admin/Manager only)     | `?id={id}`, JSON: `name`, `description`, `base_price`, `price_per_km` |
-| DELETE | Delete service (Admin/Manager only)     | `?id={id}`                                                            |
+### **Option B: Session (Browser/Frontend)**
+
+Use this if you are redirecting the user to our frontend or making AJAX calls from a logged-in user's browser.
+
+- **Mechanism:** Standard PHP Session Cookies.
 
 ---
 
-### 3. Bookings (`bookings.php`)
+## 2. Endpoints
 
-Requires Authentication (Session or API Key).
+### **A. Get Available Taxi Services**
 
-| Method | Description           | Parameters                                                                                                                                        |
-| :----- | :-------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
-| GET    | View bookings history | Provide `email` (for partners) or `user_id` (admin/internal)                                                                                      |
-| POST   | Create a booking      | `pickup_location`, `dropoff_location`, `pickup_time`, `service_id` (optional). <br> **Identify via:** `user_id` OR `email` (Auto-creates account) |
-| PUT    | Update booking status | `?id={id}`, JSON: `status` ('pending', 'confirmed', 'completed', 'cancelled')                                                                     |
+Retrieve a list of available taxi types (Sedan, SUV, Luxury, etc.) and their prices.
+
+- **Endpoint:** `GET /services.php`
+- **Auth Required:** No
+- **Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Standard Sedan",
+    "description": "Comfortable ride for up to 4 passengers",
+    "base_price": "5.00",
+    "price_per_km": "2.00"
+  },
+  {
+    "id": 2,
+    "name": "Premium SUV",
+    "description": "Spacious ride for up to 6 passengers",
+    "base_price": "10.00",
+    "price_per_km": "3.50"
+  }
+]
+```
+
+### **B. Book a Taxi**
+
+Create a new booking.
+
+- **Endpoint:** `POST /bookings.php`
+- **Auth Required:** Yes (API Key or Session)
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+
+```json
+{
+  "user_id": 101, // Optional: If known
+  "email": "tourist@example.com", // Required if user_id is missing (Auto-registers user)
+  "service_id": 1, // ID from GET /services.php
+  "pickup_location": "Hotel California",
+  "dropoff_location": "City Airport",
+  "pickup_time": "2024-12-25 14:30:00"
+}
+```
+
+- **Response:**
+
+```json
+{
+  "message": "Booking created successfully.",
+  "booking_id": 55
+}
+```
+
+### **C. Check Booking Status**
+
+Get the status of a specific booking.
+
+- **Endpoint:** `GET /bookings.php?id={booking_id}`
+- **Auth Required:** Yes
+- **Response:**
+
+```json
+{
+  "id": 55,
+  "status": "confirmed", // pending, confirmed, completed, cancelled
+  "driver_name": "John Doe",
+  "vehicle_plate": "ABC-123"
+}
+```
 
 ---
 
-### 4. Other Entities
+## 3. Integration Examples
 
-- **Drivers:** `drivers.php` (CRUD)
-- **Vehicles:** `vehicles.php` (CRUD)
-- **Taxis:** `taxis.php` (CRUD)
-- **Profile:** `profile.php` (View/Update logged-in user)
-- **Stats:** `stats.php` (Dashboard statistics)
+### **Scenario: Hotel Booking System (Group 2)**
 
----
+_A user books a room and wants to add an airport transfer._
 
-## Example Usage (External Integration)
-
-### Create a Booking via Fetch API
+**Request:**
 
 ```javascript
+// Hotel Group Frontend
+const bookingData = {
+  email: userEmail,
+  pickup_location: hotelAddress,
+  dropoff_location: "Airport",
+  pickup_time: flightTime,
+  service_id: 1, // Standard Taxi
+};
+
 fetch("https://taxi-system.infinityfreeapp.com/api/bookings.php", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
     "X-API-KEY": "TAXI_GROUP_SECURE_KEY_2024",
   },
-  body: JSON.stringify({
-    user_id: 1, // The ID of the customer
-    pickup_location: "Central Station",
-    dropoff_location: "Airport Terminal 1",
-    pickup_time: "2024-12-25 10:00:00",
-    service_id: 2,
-  }),
+  body: JSON.stringify(bookingData),
 })
-  .then((response) => response.json())
-  .then((data) => console.log(data));
+  .then((res) => res.json())
+  .then((data) => console.log("Taxi Booked:", data));
+```
+
+### **Scenario: Tour Package (Group 1)**
+
+_A tour package includes free taxi rides._
+
+The Tour Group backend can call our API using PHP/Node/Python:
+
+```php
+// Tour Group Backend (PHP)
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://taxi-system.infinityfreeapp.com/api/bookings.php");
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+    "email" => $client_email,
+    "pickup_location" => "Tour Start Point",
+    "dropoff_location" => "Tour End Point",
+    "pickup_time" => $schedule_time,
+    "service_id" => 2
+]));
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Content-Type: application/json",
+    "X-API-KEY: TAXI_GROUP_SECURE_KEY_2024"
+]);
+$result = curl_exec($ch);
+curl_close($ch);
 ```
