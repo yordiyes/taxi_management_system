@@ -1,4 +1,4 @@
-# Taxi Service Management System (Group 4 & 8)
+# Taxi Service Management System (Group 8)
 
 ## Project Overview
 
