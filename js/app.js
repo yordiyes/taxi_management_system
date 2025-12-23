@@ -84,6 +84,21 @@ function updateNav() {
   const navList = document.getElementById("nav-list");
   if (!navList) return;
 
+  // Special handling for Provider Dashboard to preserve its specific links
+  if (window.location.pathname.includes("provider_dashboard.html")) {
+    if (user && (user.role === "admin" || user.role === "manager")) {
+      navList.innerHTML = `
+        <li><a href="#" onclick="showSection('stats')">Overview</a></li>
+        <li><a href="#" onclick="showSection('services')">Services</a></li>
+        <li><a href="#" onclick="showSection('vehicles')">Vehicles</a></li>
+        <li><a href="#" onclick="showSection('drivers')">Drivers</a></li>
+        <li><a href="index.html">Tourist View</a></li>
+        <li><a href="#" onclick="logout()">Logout (${user.username})</a></li>
+      `;
+    }
+    return;
+  }
+
   if (user) {
     let links = "";
     if (user.role === "admin" || user.role === "manager") {
