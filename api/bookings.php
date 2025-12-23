@@ -7,6 +7,7 @@ $db = $database->getConnection();
 
 require_once 'config.php'; // Ensure config is loaded for API_KEY
 
+$method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"));
 
 // Auth Check: Session OR API Key

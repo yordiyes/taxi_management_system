@@ -6,6 +6,7 @@ $database = new Database();
 $db = $database->getConnection();
 
 $id = isset($_GET['id']) ? $_GET['id'] : null;
+$method = $_SERVER['REQUEST_METHOD'];
 $data = json_decode(file_get_contents("php://input"));
 
 switch($method) {

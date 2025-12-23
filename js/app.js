@@ -28,7 +28,21 @@ async function apiFetch(endpoint, method = "GET", data = null) {
     }
   }
 
-  const json = await res.json();
+  let json;
+  try {
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      json = await res.json();
+    } else {
+      const text = await res.text();
+      console.error("Non-JSON response received:", text);
+      throw new Error("Server returned an invalid response format.");
+    }
+  } catch (e) {
+    if (e.message.includes("invalid response format")) throw e;
+    console.error("JSON Parse Error:", e);
+    throw new Error("Failed to parse server response.");
+  }
 
   if (!res.ok) {
     throw new Error(json.message || "API Error");
