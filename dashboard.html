@@ -5,26 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Taxi Service</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modern.css">
 </head>
 
 <body>
     <header>
         <nav>
-            <h1>Taxi Service Manager</h1>
-            <ul id="nav-list">
+            <a href="index.html" class="logo">Global Tourism Hub</a>
+            <ul class="nav-links" id="nav-list">
                 <!-- Nav items injected by JS -->
             </ul>
         </nav>
     </header>
 
-    <div class="container">
-        <h2>Dashboard</h2>
-        <div id="dashboard-content">
-            <!-- Content loaded via JS -->
-            <p>Loading...</p>
+    <main class="container">
+        <div style="padding: 2rem 0;">
+            <h1 style="margin-bottom: 2rem;">Service Management</h1>
+            <div id="dashboard-content">
+                <!-- Content loaded via JS -->
+                <p class="text-muted">Initializing dashboard...</p>
+            </div>
         </div>
-    </div>
+    </main>
 
     <script src="js/app.js"></script>
     <script>
@@ -41,40 +43,43 @@
         async function loadDashboard() {
             const content = document.getElementById('dashboard-content');
             content.innerHTML = `
-                <div class="card">
-                    <h3>Manage Vehicles</h3>
-                    <form id="add-vehicle-form" style="margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
-                        <h4>Add New Vehicle</h4>
-                        <div class="form-group"><input type="text" id="v-make" placeholder="Make" required></div>
-                        <div class="form-group"><input type="text" id="v-model" placeholder="Model" required></div>
-                        <div class="form-group"><input type="text" id="v-plate" placeholder="License Plate" required></div>
-                        <div class="form-group"><input type="text" id="v-type" placeholder="Type (e.g. Sedan)" required></div>
-                        <div class="form-group"><input type="number" id="v-capacity" placeholder="Capacity" required></div>
-                        <button type="submit" class="btn btn-primary">Add Vehicle</button>
-                    </form>
-                    <div id="vehicle-list"></div>
-                </div>
+                <div class="grid">
+                    <div class="glass-card">
+                        <h3 style="margin-bottom: 1.5rem;">Manage Vehicles</h3>
+                        <form id="add-vehicle-form" style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border);">
+                            <h4 style="margin-bottom: 1rem; color: var(--text-muted);">Add New Vehicle</h4>
+                            <div class="form-group"><input type="text" id="v-make" class="form-control" placeholder="Make (e.g. Toyota)" required></div>
+                            <div class="form-group"><input type="text" id="v-model" class="form-control" placeholder="Model (e.g. Camry)" required></div>
+                            <div class="form-group"><input type="text" id="v-plate" class="form-control" placeholder="License Plate" required></div>
+                            <div class="form-group"><input type="text" id="v-type" class="form-control" placeholder="Type (e.g. Sedan)" required></div>
+                            <div class="form-group"><input type="number" id="v-capacity" class="form-control" placeholder="Capacity" required></div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Add Vehicle</button>
+                        </form>
+                        <div id="vehicle-list" style="overflow-x: auto;"></div>
+                    </div>
 
-                <div class="card">
-                    <h3>Manage Drivers</h3>
-                    <form id="add-driver-form" style="margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
-                        <h4>Add New Driver</h4>
-                        <div class="form-group"><input type="text" id="d-name" placeholder="Name" required></div>
-                        <div class="form-group"><input type="text" id="d-license" placeholder="License Number" required></div>
-                        <div class="form-group"><input type="text" id="d-phone" placeholder="Phone" required></div>
-                        <div class="form-group">
-                            <select id="d-vehicle">
-                                <option value="">Select Vehicle (Optional)</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Driver</button>
-                    </form>
-                    <div id="driver-list"></div>
+                    <div class="glass-card">
+                        <h3 style="margin-bottom: 1.5rem;">Manage Drivers</h3>
+                        <form id="add-driver-form" style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border);">
+                            <h4 style="margin-bottom: 1rem; color: var(--text-muted);">Add New Driver</h4>
+                            <div class="form-group"><input type="text" id="d-name" class="form-control" placeholder="Full Name" required></div>
+                            <div class="form-group"><input type="text" id="d-license" class="form-control" placeholder="License Number" required></div>
+                            <div class="form-group"><input type="text" id="d-phone" class="form-control" placeholder="Phone Number" required></div>
+                            <div class="form-group">
+                                <select id="d-vehicle" class="form-control">
+                                    <option value="">Select Vehicle (Optional)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Add Driver</button>
+                        </form>
+                        <div id="driver-list" style="overflow-x: auto;"></div>
+                    </div>
                 </div>
             `;
 
             loadVehicles();
             loadDrivers();
+            // ... (rest of listeners stay the same)
 
             document.getElementById('add-vehicle-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -120,17 +125,22 @@
                 if (select) select.innerHTML = options;
 
                 // Update list
-                let html = `<table><thead><tr><th>ID</th><th>Make/Model</th><th>Plate</th><th>Status</th><th>Action</th></tr></thead><tbody>`;
+                let html = `<div class="grid" style="margin-top: 2rem;">`;
                 vehicles.forEach(v => {
-                    html += `<tr>
-                        <td>${v.id}</td>
-                        <td>${v.make} ${v.model}</td>
-                        <td>${v.license_plate}</td>
-                        <td>${v.status}</td>
-                        <td><button class="btn btn-danger" onclick="deleteVehicle(${v.id})">Delete</button></td>
-                    </tr>`;
+                    html += `
+                        <div class="glass-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <h3 style="margin-bottom: 0;">${v.make} ${v.model}</h3>
+                                <span style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; background: ${v.status === 'active' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)'}; color: ${v.status === 'active' ? '#10b981' : '#f59e0b'}; font-weight: 600;">${v.status.toUpperCase()}</span>
+                            </div>
+                            <p class="text-muted">🚕 ${v.type} • 🔢 ${v.license_plate}</p>
+                            <p class="text-muted" style="margin-top: 0.5rem;">👥 Capacity: ${v.capacity} Seats</p>
+                            <div style="margin-top: 1.5rem;">
+                                <button class="btn btn-glass" style="width: 100%; color: #ef4444;" onclick="deleteVehicle(${v.id})">Delete Vehicle</button>
+                            </div>
+                        </div>`;
                 });
-                html += `</tbody></table>`;
+                html += `</div>`;
                 list.innerHTML = html;
             } catch (err) { console.error(err); }
         }
@@ -139,18 +149,24 @@
             try {
                 const drivers = await apiFetch('drivers.php');
                 const list = document.getElementById('driver-list');
-                let html = `<table><thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Vehicle</th><th>Status</th><th>Action</th></tr></thead><tbody>`;
+                let html = `<div class="grid" style="margin-top: 2rem;">`;
                 drivers.forEach(d => {
-                    html += `<tr>
-                        <td>${d.id}</td>
-                        <td>${d.name}</td>
-                        <td>${d.phone}</td>
-                        <td>${d.make ? d.make + ' ' + d.model : 'None'}</td>
-                        <td>${d.status}</td>
-                        <td><button class="btn btn-danger" onclick="deleteDriver(${d.id})">Delete</button></td>
-                    </tr>`;
+                    const statusColor = d.status === 'active' ? '#10b981' : '#ef4444';
+                    const statusBg = d.status === 'active' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)';
+                    html += `
+                        <div class="glass-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <h3 style="margin-bottom: 0;">${d.name}</h3>
+                                <span style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; background: ${statusBg}; color: ${statusColor}; font-weight: 600;">${d.status.toUpperCase()}</span>
+                            </div>
+                            <p class="text-muted">📞 ${d.phone}</p>
+                            <p class="text-muted" style="margin-top: 0.5rem;">🚗 ${d.make ? d.make + ' ' + d.model : 'No Vehicle assigned'}</p>
+                            <div style="margin-top: 1.5rem;">
+                                <button class="btn btn-glass" style="width: 100%; color: #ef4444;" onclick="deleteDriver(${d.id})">Delete Driver</button>
+                            </div>
+                        </div>`;
                 });
-                html += `</tbody></table>`;
+                html += `</div>`;
                 list.innerHTML = html;
             } catch (err) { console.error(err); }
         }

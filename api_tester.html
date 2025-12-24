@@ -3,102 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple API Partner Tester</title>
+    <title>API Sandbox | Partner Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern.css">
     <style>
       body {
         font-family: sans-serif;
         padding: 20px;
         max-width: 800px;
         margin: 0 auto;
-        line-height: 1.5;
-      }
-      .box {
-        border: 1px solid #ccc;
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        background: #f9f9f9;
-      }
-      input,
-      button {
-        padding: 10px;
-        margin: 5px 0;
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-      }
-      button {
-        background: #4f46e5;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-      }
-      button:hover {
-        background: #4338ca;
-      }
-      pre {
-        background: #eee;
-        padding: 15px;
-        border-radius: 4px;
-        overflow-x: auto;
-        font-size: 13px;
-        min-height: 50px;
-      }
-      h3 {
-        margin-top: 0;
       }
       .label {
-        font-size: 12px;
-        font-weight: bold;
-        color: #666;
-        margin-top: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+        margin-top: 1.5rem;
       }
+      .output-area {
+        background: #000;
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        padding: 1.5rem;
+        margin-top: 2rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      hr {
+        border: 0;
+        border-top: 1px solid var(--glass-border);
+        margin: 2rem 0;
+      }
+      h4 { margin-top: 2rem; color: var(--primary); }
     </style>
   </head>
   <body>
-    <h1>Partner API Sandbox</h1>
-    <p>Use this simple page to test the Taxi API from any browser tab.</p>
+    <div class="sandbox-container">
+        <h1 class="gradient-text" style="font-size: 3rem; margin-bottom: 1rem;">API Sandbox</h1>
+        <p class="text-muted" style="margin-bottom: 3rem;">Universal partner integration tester for Taxi & Tour services.</p>
 
-    <div class="box">
-      <h3>1. Configuration</h3>
+    <div class="glass-card">
+      <h3 style="margin-top: 0;">1. Configuration</h3>
       <div class="label">API BASE URL</div>
       <input
         type="text"
         id="baseUrl"
+        class="form-control"
         value="https://taxi-system.infinityfreeapp.com/api"
       />
       <div class="label">API KEY</div>
-      <input type="text" id="apiKey" value="TAXI_GROUP_SECURE_KEY_2024" />
+      <input type="text" id="apiKey" class="form-control" value="TAXI_GROUP_SECURE_KEY_2024" />
     </div>
 
-    <div class="box">
-      <h3>2. Get All Services (Public)</h3>
-      <button onclick="test('/services.php', 'GET')">Fetch Services</button>
+    <div class="glass-card mt-8">
+      <h3 style="margin-top: 0;">2. Get All Services (Public)</h3>
+      <button class="btn btn-primary" style="width: 100%;" onclick="test('/services.php', 'GET')">Fetch Services</button>
     </div>
 
-    <div class="box">
-      <h3>3. Seamless Booking (Partner Integration)</h3>
+    <div class="glass-card mt-8">
+      <h3 style="margin-top: 0;">3. Seamless Booking (Partner Integration)</h3>
       <div class="label">USER EMAIL</div>
-      <input type="email" id="bookEmail" value="tester@gmail.com" />
+      <input type="email" id="bookEmail" class="form-control" value="tester@gmail.com" />
       <div class="label">PICKUP LOCATION</div>
-      <input type="text" id="pickup" value="Central Mall" />
+      <input type="text" id="pickup" class="form-control" value="Central Mall" />
       <div class="label">DROPOFF LOCATION</div>
-      <input type="text" id="dropoff" value="Airport" />
+      <input type="text" id="dropoff" class="form-control" value="Airport" />
       <div class="label">PICKUP TIME (YYYY-MM-DD HH:MM:SS)</div>
-      <input type="text" id="time" value="2025-01-01 12:00:00" />
-      <button onclick="bookTaxi()">Order Taxi Seamlessly</button>
+      <input type="text" id="time" class="form-control" value="2025-01-01 12:00:00" />
+      <button class="btn btn-primary mt-8" style="width: 100%;" onclick="bookTaxi()">Order Taxi Seamlessly</button>
     </div>
 
-    <div class="box">
-      <h3>4. View Bookings by Email</h3>
+    <div class="glass-card mt-8">
+      <h3 style="margin-top: 0;">4. View Bookings by Email</h3>
       <div class="label">USER EMAIL</div>
-      <input type="email" id="viewEmail" value="tester@gmail.com" />
-      <button onclick="viewBookings()">Fetch History</button>
+      <input type="email" id="viewEmail" class="form-control" value="tester@gmail.com" />
+      <button class="btn btn-primary mt-8" style="width: 100%;" onclick="viewBookings()">Fetch History</button>
     </div>
 
-    <div class="box" style="border: 1px solid #4f46e5; background: #f0f0ff">
-      <h3 style="color: #4f46e5">
+    <div class="glass-card mt-8" style="border: 1px solid var(--primary); background: rgba(99, 102, 241, 0.05)">
+      <h3 style="color: var(--primary); margin-top: 0;">
         5. Tour Management Integration (External API)
       </h3>
 
@@ -106,48 +92,50 @@
       <input
         type="text"
         id="tourBaseUrl"
+        class="form-control"
         value="https://tour-management-web.onrender.com/api/v1/"
       />
       <div class="label">TOUR API KEY</div>
-      <input type="text" id="tourApiKey" value="demo-api-key" />
+      <input type="text" id="tourApiKey" class="form-control" value="demo-api-key" />
 
-      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc" />
+      <hr>
 
       <h4>Explore Places</h4>
       <div class="label">Search Query (optional)</div>
-      <input type="text" id="placeQuery" placeholder="e.g. Paris" />
-      <button onclick="getPlaces()" style="background: #059669">
+      <input type="text" id="placeQuery" class="form-control" placeholder="e.g. Paris" />
+      <button class="btn btn-glass mt-4" style="width: 100%; color: #10b981;" onclick="getPlaces()">
         Fetch Places
       </button>
 
       <h4>Find Tours</h4>
       <div class="label">Search Query (optional)</div>
-      <input type="text" id="tourQuery" placeholder="e.g. Walking Tour" />
-      <button onclick="getTours()" style="background: #059669">
+      <input type="text" id="tourQuery" class="form-control" placeholder="e.g. Walking Tour" />
+      <button class="btn btn-glass mt-4" style="width: 100%; color: #10b981;" onclick="getTours()">
         Fetch Tours
       </button>
 
       <h4>Book a Tour</h4>
       <div class="label">Tour ID</div>
-      <input type="number" id="bookTourId" value="1" />
+      <input type="number" id="bookTourId" class="form-control" value="1" />
       <div class="label">User Email</div>
       <input
         type="email"
         id="bookTourEmail"
+        class="form-control"
         value="partner-guest@example.com"
       />
       <div class="label">Guest Name</div>
-      <input type="text" id="bookTourName" value="Guest from Partner" />
-      <button onclick="bookTour()" style="background: #059669">
+      <input type="text" id="bookTourName" class="form-control" value="Guest from Partner" />
+      <button class="btn btn-primary mt-8" style="width: 100%;" onclick="bookTour()">
         Book Tour
       </button>
     </div>
 
-    <div class="box" style="background: #333; color: #fff">
-      <h3>Live Response Output</h3>
+    <div class="output-area">
+      <h3 style="margin-top: 0; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.1em;">LIVE RESPONSE OUTPUT</h3>
       <pre
         id="output"
-        style="background: #222; color: #0f0; border: 1px solid #444"
+        style="color: #10b981; margin-top: 1rem;"
       >
 // Results will appear here...</pre
       >

@@ -4,243 +4,150 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Global Tourism Hub - Tourist Services</title>
-    <link rel="stylesheet" href="css/premium.css" />
+    <link rel="stylesheet" href="css/modern.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
-
   <body>
     <header>
       <nav>
-        <h1>Global Tourism Hub</h1>
-        <ul id="nav-list">
-          <li><a href="#" onclick="showSection('home')">Home</a></li>
+        <a href="#" class="logo" onclick="showSection('home')">Global Tourism Hub</a>
+        <ul class="nav-links" id="nav-list">
+          <li><a href="#" class="active" onclick="showSection('home')">Home</a></li>
           <li id="auth-link"><a href="login.html">Login</a></li>
         </ul>
       </nav>
     </header>
 
-    <div class="container">
+    <main class="container">
       <!-- Hero Section -->
-      <div id="home" class="section">
-        <div
-          class="card text-center"
-          style="
-            padding: 4rem 2rem;
-            background: linear-gradient(to right, #6366f1, #ec4899);
-            color: white;
-          "
-        >
-          <h2 style="color: white; font-size: 2.5rem">
-            Discover Your Next Adventure
-          </h2>
-          <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.2rem">
-            One platform for all your travel needs.
-          </p>
-          <div style="margin-top: 2rem">
-            <button
-              onclick="showSection('services')"
-              class="btn"
-              style="background: white; color: #4f46e5; padding: 0.75rem 2rem"
-            >
-              Start Exploring
-            </button>
-          </div>
+      <section id="home" class="section hero">
+        <h1>Discover Your Next<br>Digital Adventure</h1>
+        <p>Your premium gateway to seamless travel, luxury stays, and elite taxi services worldwide.</p>
+        <div class="cta-group">
+          <button onclick="showSection('services')" class="btn btn-primary">Start Exploring</button>
+          <a href="#services" class="btn btn-glass">Learn More</a>
         </div>
-      </div>
+      </section>
 
       <!-- Services Section -->
-      <div id="services" class="section hidden">
+      <section id="services" class="section hidden">
         <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('browse')">
-            Browse Places
-          </button>
-          <button class="tab-btn" onclick="switchTab('tickets')">
-            Travel Tickets
-          </button>
+          <button class="tab-btn active" onclick="switchTab('browse')">Browse Places</button>
+          <button class="tab-btn" onclick="switchTab('tickets')">Tours</button>
           <button class="tab-btn" onclick="switchTab('hotel')">Hotels</button>
-          <button class="tab-btn" onclick="switchTab('restaurant')">
-            Restaurants
-          </button>
+          <button class="tab-btn" onclick="switchTab('restaurant')">Restaurants</button>
           <button class="tab-btn" onclick="switchTab('taxi')">Taxis</button>
         </div>
 
         <!-- Browse Places -->
-        <div id="tab-browse" class="tab-content">
-          <h3>Browse Popular Destinations</h3>
+        <div id="tab-browse" class="tab-content transition-fade">
+          <h2 class="section-title">Popular Destinations</h2>
           <div id="places-list" class="grid">
-            <p>Loading places...</p>
+            <p class="text-muted">Loading places...</p>
           </div>
         </div>
 
-        <!-- Tours (formerly Travel Tickets) -->
-        <div id="tab-tickets" class="tab-content hidden">
-          <div class="card">
-            <h3>Find and Book Tours</h3>
-            <p style="color: #6b7280; margin-bottom: 1.5rem">
-              Powered by Tour Management Group
-            </p>
+        <!-- Tours -->
+        <div id="tab-tickets" class="tab-content hidden transition-fade">
+          <div class="glass-card">
+            <h2 class="section-title">Find & Book Tours</h2>
+            <p class="text-muted">Explore hand-picked adventures guided by local experts.</p>
 
-            <div style="margin-bottom: 20px; display: flex; gap: 10px">
-              <input
-                type="text"
-                id="tour-search"
-                placeholder="Search tours..."
-                style="
-                  flex: 1;
-                  padding: 10px;
-                  border: 1px solid #ccc;
-                  border-radius: 4px;
-                "
-              />
-              <button onclick="loadTours()" class="btn btn-primary">
-                Search
-              </button>
+            <div class="search-box glass-card" style="padding: 1rem; display: flex; gap: 1rem; margin-bottom: 2rem;">
+              <input type="text" id="tour-search" class="form-control" placeholder="Search destinations..." style="flex: 1;">
+              <button onclick="loadTours()" class="btn btn-primary">Search</button>
             </div>
 
             <div id="tours-list" class="grid">
-              <p>Loading tours...</p>
+              <p class="text-muted">Enter a destination to search...</p>
             </div>
           </div>
         </div>
 
-        <!-- Hotels (Mock - Hotel Management) -->
-        <div id="tab-hotel" class="tab-content hidden">
-          <div class="card">
-            <h3>Reserve Hotel Rooms</h3>
-            <p style="color: #6b7280; margin-bottom: 1.5rem">
-              Connects to Hotel Management Group Service (Group 2, 4)
-            </p>
-
-            <!-- Dynamic List Container -->
+        <!-- Hotels -->
+        <div id="tab-hotel" class="tab-content hidden transition-fade">
+          <div class="glass-card">
+            <h2 class="section-title">Luxury Accommodations</h2>
+            <p class="text-muted">Premier stays curated for your comfort and style.</p>
             <div id="hotel-list" class="grid">
-              <p>Click "Hotels" to load data...</p>
+              <p class="text-muted">Loading available rooms...</p>
             </div>
           </div>
         </div>
 
-        <!-- Restaurants (Mock - Restaurant Management) -->
-        <div id="tab-restaurant" class="tab-content hidden">
-          <div class="card">
-            <h3>Book Restaurant Tables</h3>
-            <p style="color: #6b7280; margin-bottom: 1.5rem">
-              Connects to Restaurant Management Group Service (Group 3, 7)
-            </p>
+        <!-- Restaurants -->
+        <div id="tab-restaurant" class="tab-content hidden transition-fade">
+          <div class="glass-card">
+            <h2 class="section-title">Exquisite Dining</h2>
+            <p class="text-muted">Reserve your table at the city's highest-rated culinary spots.</p>
             <div class="grid">
-              <div
-                class="card"
-                style="border: 1px solid #e5e7eb; box-shadow: none"
-              >
-                <h4>The Gourmet Kitchen</h4>
-                <p>🍽️ Fine Dining Experience</p>
-                <p>Cuisine: French</p>
-                <button
-                  class="btn btn-secondary"
-                  onclick="alert('Booking request sent to Restaurant Management Group!')"
-                >
-                  Book Table
-                </button>
+              <div class="glass-card">
+                <h3>The Gourmet Kitchen</h3>
+                <p class="text-muted">🍽️ Fine Dining • French Cuisine</p>
+                <div style="margin-top: 1.5rem;">
+                   <button class="btn btn-glass" style="width: 100%" onclick="alert('Booking request sent!')">Book Table</button>
+                </div>
               </div>
-              <div
-                class="card"
-                style="border: 1px solid #e5e7eb; box-shadow: none"
-              >
-                <h4>Sushi Paradise</h4>
-                <p>🍣 Authentic Japanese Cuisine</p>
-                <p>Cuisine: Japanese</p>
-                <button
-                  class="btn btn-secondary"
-                  onclick="alert('Booking request sent to Restaurant Management Group!')"
-                >
-                  Book Table
-                </button>
+              <div class="glass-card">
+                <h3>Sushi Paradise</h3>
+                <p class="text-muted">🍣 Essential • Japanese Cuisine</p>
+                <div style="margin-top: 1.5rem;">
+                  <button class="btn btn-glass" style="width: 100%" onclick="alert('Booking request sent!')">Book Table</button>
+                </div>
               </div>
-              <div
-                class="card"
-                style="border: 1px solid #e5e7eb; box-shadow: none"
-              >
-                <h4>Mama's Trattoria</h4>
-                <p>🍝 Traditional Italian Food</p>
-                <p>Cuisine: Italian</p>
-                <button
-                  class="btn btn-secondary"
-                  onclick="alert('Booking request sent to Restaurant Management Group!')"
-                >
-                  Book Table
-                </button>
+              <div class="glass-card">
+                <h3>Mama's Trattoria</h3>
+                <p class="text-muted">🍝 Traditional • Italian Cuisine</p>
+                <div style="margin-top: 1.5rem;">
+                  <button class="btn btn-glass" style="width: 100%" onclick="alert('Booking request sent!')">Book Table</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Taxis (Real Implementation - Taxi Service Management) -->
-        <div id="tab-taxi" class="tab-content hidden">
-          <div class="card">
-            <h3>Order a Taxi</h3>
-            <p style="color: #6b7280; margin-bottom: 1.5rem">
-              Real Taxi Service Management (Group 4, 8)
-            </p>
-            <form id="taxi-booking-form">
-              <input type="hidden" id="service-id-input" />
-
-              <div
-                id="selected-service-display"
-                style="
-                  display: none;
-                  background: #e0e7ff;
-                  color: #4338ca;
-                  padding: 1rem;
-                  border-radius: var(--radius);
-                  margin-bottom: 1rem;
-                  border: 1px solid #c7d2fe;
-                "
-              >
+        <!-- Taxis -->
+        <div id="tab-taxi" class="tab-content hidden transition-fade">
+          <div class="glass-card" style="margin-bottom: 3rem;">
+            <h2 class="section-title">Premium Taxi Service</h2>
+            <p class="text-muted">Fast, reliable, and professional transport at your fingertips.</p>
+            
+            <form id="taxi-booking-form" class="mt-8">
+              <input type="hidden" id="service-id-input">
+              
+              <div id="selected-service-display" class="glass-card" style="display: none; background: rgba(99, 102, 241, 0.1); border-color: var(--primary); margin-bottom: 2rem;">
                 <!-- Filled by JS -->
               </div>
 
-              <div class="grid">
+              <div class="grid" style="margin-top: 0;">
                 <div class="form-group">
-                  <label>Pickup Location</label>
-                  <input
-                    type="text"
-                    id="pickup"
-                    required
-                    placeholder="e.g. Airport Terminal 1"
-                  />
+                  <label>Pickup Point</label>
+                  <input type="text" id="pickup" class="form-control" placeholder="Enter pickup address" required>
                 </div>
                 <div class="form-group">
-                  <label>Dropoff Location</label>
-                  <input
-                    type="text"
-                    id="dropoff"
-                    required
-                    placeholder="e.g. Grand Hotel Downtown"
-                  />
+                  <label>Destination</label>
+                  <input type="text" id="dropoff" class="form-control" placeholder="Enter dropoff location" required>
                 </div>
                 <div class="form-group">
-                  <label>Pickup Date & Time</label>
-                  <input type="datetime-local" id="time" required />
+                  <label>Schedule Time</label>
+                  <input type="datetime-local" id="time" class="form-control" required>
                 </div>
               </div>
-              <button
-                type="submit"
-                class="btn btn-primary"
-                style="margin-top: 1rem"
-              >
-                Book Taxi Ride
-              </button>
+              
+              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1.2rem;">Confirm Booking</button>
             </form>
           </div>
 
-          <h3>Available Taxi Services</h3>
+          <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Available Fleet</h3>
           <div id="taxi-list" class="grid">
             <!-- Loaded via JS -->
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
 
     <script src="js/app.js"></script>
     <script>
@@ -305,15 +212,15 @@
           list.innerHTML = res.data
             .map(
               (p) => `
-                  <div class="card">
+                  <div class="glass-card">
                       <img src="https://via.placeholder.com/400x200/6366f1/ffffff?text=${encodeURIComponent(
                         p.name
-                      )}" style="width: 100%; border-radius: var(--radius); margin-bottom: 1rem;">
-                      <h4>${p.name}</h4>
-                      <p>${p.type || "Destination"}</p>
-                      <button class="btn btn-primary" onclick="alert('View details for ${
-                        p.name
-                      }')">View Details</button>
+                      )}" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+                      <h3 style="margin-bottom: 0.5rem;">${p.name}</h3>
+                      <p class="text-muted">📍 ${p.type || "Destination"}</p>
+                      <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-glass" style="width: 100%" onclick="alert('View details for ${p.name}')">View Details</button>
+                      </div>
                   </div>
               `
             )
@@ -337,12 +244,13 @@
           list.innerHTML = res.data
             .map(
               (t) => `
-                  <div class="card">
-                      <h4>${t.title}</h4>
-                      <p><strong>Location:</strong> ${t.location}</p>
-                      <p><strong>Price:</strong> $${t.price}</p>
-                      <p><strong>Date:</strong> ${t.schedule_date}</p>
-                      <button class="btn btn-primary" onclick="bookTourPrompt(${t.id}, '${t.title}')">Book Now</button>
+                  <div class="glass-card">
+                      <h3 style="margin-bottom: 0.5rem;">${t.title}</h3>
+                      <p class="text-muted">📍 ${t.location} • 📅 ${t.schedule_date}</p>
+                      <p style="margin-top: 1rem; font-weight: 700; font-size: 1.25rem;">$${t.price}</p>
+                      <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-glass" style="width: 100%" onclick="bookTourPrompt(${t.id}, '${t.title}')">Book Now</button>
+                      </div>
                   </div>
               `
             )
@@ -407,11 +315,13 @@
           list.innerHTML = hotels
             .map(
               (h) => `
-                  <div class="card" style="border: 1px solid #e5e7eb; box-shadow: none;">
-                      <h4>${h.name}</h4>
-                      <p>${"⭐".repeat(h.rating)}</p>
-                      <p>$${h.price}/night</p>
-                      <button class="btn btn-secondary" onclick="alert('This would send a request to the Hotel Group API or redirect to their booking page')">Reserve Now</button>
+                  <div class="glass-card">
+                      <h3 style="margin-bottom: 0.5rem;">${h.name}</h3>
+                      <p class="text-muted">${"⭐".repeat(h.rating)} • Luxury Stay</p>
+                      <p style="margin-top: 1rem; font-weight: 700; font-size: 1.25rem;">$${h.price}/night</p>
+                      <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-glass" style="width: 100%" onclick="alert('Reserve Now to Group 2 API')">Reserve Now</button>
+                      </div>
                   </div>
               `
             )
@@ -435,12 +345,13 @@
           list.innerHTML = services
             .map(
               (s) => `
-                    <div class="card">
-                        <h4>${s.name}</h4>
-                        <p>${s.description}</p>
-                        <p><strong>Base Price:</strong> $${s.base_price}</p>
-                        <p><strong>Per KM:</strong> $${s.price_per_km}</p>
-                        <button class="btn btn-primary" onclick="prefillTaxi('${s.id}', '${s.name}')">Select This Taxi</button>
+                    <div class="glass-card">
+                        <h3 style="margin-bottom: 0.5rem;">${s.name}</h3>
+                        <p class="text-muted" style="font-size: 0.9rem;">${s.description}</p>
+                        <p style="margin-top: 1rem; font-weight: 600;">$${s.base_price} Base • $${s.price_per_km}/km</p>
+                        <div style="margin-top: 1.5rem;">
+                          <button class="btn btn-glass" style="width: 100%" onclick="prefillTaxi('${s.id}', '${s.name}')">Select This Taxi</button>
+                        </div>
                     </div>
                 `
             )

@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Provider Dashboard - Taxi Service</title>
-    <link rel="stylesheet" href="css/premium.css">
+    <link rel="stylesheet" href="css/modern.css">
 </head>
 
 <body>
     <header>
         <nav>
-            <h1>Provider Dashboard</h1>
-            <ul id="nav-list">
-                <li><a href="#" onclick="showSection('stats')">Overview</a></li>
+            <a href="index.html" class="logo">Provider Hub</a>
+            <ul class="nav-links" id="nav-list">
+                <li><a href="#" class="active" onclick="showSection('stats')">Overview</a></li>
                 <li><a href="#" onclick="showSection('services')">Services</a></li>
                 <li><a href="#" onclick="showSection('vehicles')">Vehicles</a></li>
                 <li><a href="#" onclick="showSection('drivers')">Drivers</a></li>
@@ -22,153 +22,164 @@
         </nav>
     </header>
 
-    <div class="container">
+    <main class="container">
         <!-- Stats Section -->
-        <div id="stats" class="section">
-            <h2>Overview</h2>
+        <section id="stats" class="section">
+            <h1 style="margin: 2rem 0;">Business Overview</h1>
             <div class="grid">
-                <div class="card stat-card">
-                    <div class="stat-value" id="total-users">-</div>
-                    <div class="stat-label">Total Users</div>
+                <div class="glass-card text-center">
+                    <div class="stat-value" id="total-users" style="font-size: 3rem; margin-bottom: 0.5rem;">-</div>
+                    <div class="stat-label" style="letter-spacing: 0.1em; font-weight: 600;">Total Users</div>
                 </div>
-                <div class="card stat-card">
-                    <div class="stat-value" id="total-bookings">-</div>
-                    <div class="stat-label">Total Bookings</div>
+                <div class="glass-card text-center">
+                    <div class="stat-value" id="total-bookings" style="font-size: 3rem; margin-bottom: 0.5rem;">-</div>
+                    <div class="stat-label" style="letter-spacing: 0.1em; font-weight: 600;">Total Bookings</div>
                 </div>
-                <div class="card stat-card">
-                    <div class="stat-value" id="total-services">-</div>
-                    <div class="stat-label">Active Services</div>
+                <div class="glass-card text-center">
+                    <div class="stat-value" id="total-services" style="font-size: 3rem; margin-bottom: 0.5rem;">-</div>
+                    <div class="stat-label" style="letter-spacing: 0.1em; font-weight: 600;">Active Services</div>
                 </div>
-                <div class="card stat-card">
-                    <div class="stat-value" id="visitors-today">-</div>
-                    <div class="stat-label">Visitors Today</div>
+                <div class="glass-card text-center">
+                    <div class="stat-value" id="visitors-today" style="font-size: 3rem; margin-bottom: 0.5rem;">-</div>
+                    <div class="stat-label" style="letter-spacing: 0.1em; font-weight: 600;">Visitors Today</div>
                 </div>
             </div>
 
-            <h3 class="mt-4">Recent Bookings</h3>
-            <div class="card">
-                <div id="booking-history">Loading...</div>
+            <h2 class="mt-8" style="margin-bottom: 1.5rem;">Recent Bookings</h2>
+            <div class="glass-card" style="padding: 1.5rem; overflow-x: auto;">
+                <div id="booking-history">
+                    <p class="text-muted">Loading transactions...</p>
+                </div>
             </div>
-        </div>
+        </section>
 
         <!-- Services Management -->
-        <div id="services" class="section hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h2>Manage Services</h2>
+        <section id="services" class="section hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0;">
+                <h1>Manage Services</h1>
                 <button class="btn btn-primary" onclick="openServiceModal()">+ Add New Service</button>
             </div>
             <div id="services-list" class="grid"></div>
-        </div>
+        </section>
 
         <!-- Vehicle Management -->
-        <div id="vehicles" class="section hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h2>Manage Vehicles</h2>
+        <section id="vehicles" class="section hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0;">
+                <h1>Manage Vehicles</h1>
                 <button class="btn btn-primary" onclick="openVehicleModal()">+ Add New Vehicle</button>
             </div>
             <div id="vehicles-list" class="grid"></div>
-        </div>
+        </section>
 
         <!-- Driver Management -->
-        <div id="drivers" class="section hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h2>Manage Drivers</h2>
+        <section id="drivers" class="section hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0;">
+                <h1>Manage Drivers</h1>
                 <button class="btn btn-primary" onclick="openDriverModal()">+ Add New Driver</button>
             </div>
             <div id="drivers-list" class="grid"></div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <!-- Add Service Modal -->
-    <div id="service-modal" class="card"
-        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid #e5e7eb;">
+    <div id="service-modal" class="glass-card"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 480px; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
         <h3>Add/Edit Service</h3>
-        <form id="service-form">
+        <form id="service-form" class="mt-8">
             <input type="hidden" id="service-id">
             <div class="form-group">
                 <label>Service Name</label>
-                <input type="text" id="service-name" required>
+                <input type="text" id="service-name" class="form-control" required placeholder="Luxury Sedan Service">
             </div>
             <div class="form-group">
                 <label>Description</label>
-                <textarea id="service-desc" rows="3"></textarea>
+                <textarea id="service-desc" class="form-control" rows="3" placeholder="Premium door-to-door service..."></textarea>
             </div>
-            <div class="form-group">
-                <label>Base Price ($)</label>
-                <input type="number" id="service-base" step="0.01" required>
+            <div class="grid" style="margin-top: 0;">
+                <div class="form-group">
+                    <label>Base Price ($)</label>
+                    <input type="number" id="service-base" class="form-control" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Price per KM ($)</label>
+                    <input type="number" id="service-km" class="form-control" step="0.01" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Price per KM ($)</label>
-                <input type="number" id="service-km" step="0.01" required>
-            </div>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" onclick="closeServiceModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                <button type="button" class="btn btn-glass" onclick="closeServiceModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
             </div>
         </form>
     </div>
 
     <!-- Add Vehicle Modal -->
-    <div id="vehicle-modal" class="card"
-        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid #e5e7eb;">
+    <div id="vehicle-modal" class="glass-card"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 480px; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
         <h3>Add/Edit Vehicle</h3>
-        <form id="vehicle-form">
+        <form id="vehicle-form" class="mt-8">
             <input type="hidden" id="vehicle-id">
-            <div class="form-group">
-                <label>Make</label>
-                <input type="text" id="vehicle-make" required>
-            </div>
-            <div class="form-group">
-                <label>Model</label>
-                <input type="text" id="vehicle-model" required>
+            <div class="grid" style="margin: 0;">
+                <div class="form-group">
+                    <label>Make</label>
+                    <input type="text" id="vehicle-make" class="form-control" required placeholder="Tesla">
+                </div>
+                <div class="form-group">
+                    <label>Model</label>
+                    <input type="text" id="vehicle-model" class="form-control" required placeholder="Model S">
+                </div>
             </div>
             <div class="form-group">
                 <label>License Plate</label>
-                <input type="text" id="vehicle-license" required>
+                <input type="text" id="vehicle-license" class="form-control" required placeholder="ABC-1234">
             </div>
-            <div class="form-group">
-                <label>Type</label>
-                <select id="vehicle-type">
-                    <option value="Sedan">Sedan</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Van">Van</option>
-                </select>
+            <div class="grid" style="margin: 0;">
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="vehicle-type" class="form-control">
+                        <option value="Sedan">Sedan</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Van">Van</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Capacity</label>
+                    <input type="number" id="vehicle-capacity" class="form-control" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Capacity</label>
-                <input type="number" id="vehicle-capacity" required>
-            </div>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" onclick="closeVehicleModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                <button type="button" class="btn btn-glass" onclick="closeVehicleModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Vehicle</button>
             </div>
         </form>
     </div>
 
     <!-- Add Driver Modal -->
-    <div id="driver-modal" class="card"
-        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; display: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); z-index: 1000; border: 1px solid #e5e7eb;">
+    <div id="driver-modal" class="glass-card"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 440px; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
         <h3>Add/Edit Driver</h3>
-        <form id="driver-form">
+        <form id="driver-form" class="mt-8">
             <input type="hidden" id="driver-id">
             <div class="form-group">
-                <label>Name</label>
-                <input type="text" id="driver-name" required>
+                <label>Full Name</label>
+                <input type="text" id="driver-name" class="form-control" required placeholder="Jane Smith">
             </div>
             <div class="form-group">
                 <label>License Number</label>
-                <input type="text" id="driver-license" required>
+                <input type="text" id="driver-license" class="form-control" required placeholder="DL-98765432">
             </div>
             <div class="form-group">
-                <label>Phone</label>
-                <input type="text" id="driver-phone" required>
+                <label>Phone Number</label>
+                <input type="text" id="driver-phone" class="form-control" required placeholder="+1 (555) 000-0000">
             </div>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button type="button" class="btn btn-secondary" onclick="closeDriverModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save</button>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                <button type="button" class="btn btn-glass" onclick="closeDriverModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Driver</button>
             </div>
         </form>
     </div>
+
+    <!-- Backdrop -->
+    <div id="modal-backdrop" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; z-index: 1000;"></div>
 
     <script src="js/app.js"></script>
     <script>
@@ -202,31 +213,39 @@
                 const history = await apiFetch('stats.php?action=history');
                 const historyContainer = document.getElementById('booking-history');
                 if (history.length === 0) {
-                    historyContainer.innerHTML = '<p>No bookings found.</p>';
+                    historyContainer.innerHTML = '<p class="text-muted">No recent bookings found.</p>';
                     return;
                 }
 
-                let html = `<table><thead><tr><th>User</th><th>Service</th><th>Pickup</th><th>Status</th><th>Action</th><th>Date</th></tr></thead><tbody>`;
+                let html = `<div class="grid" style="margin-top: 1.5rem;">`;
                 history.forEach(h => {
                     let actionBtn = '';
                     if (h.status === 'pending') {
-                        actionBtn = `<button class="btn btn-sm btn-primary" onclick="updateBookingStatus(${h.id}, 'confirmed')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;">Approve</button>`;
+                        actionBtn = `<button class="btn btn-primary" onclick="updateBookingStatus(${h.id}, 'confirmed')" style="width: 100%;">Approve</button>`;
                     } else if (h.status === 'confirmed') {
-                        actionBtn = `<button class="btn btn-sm btn-success" onclick="updateBookingStatus(${h.id}, 'completed')" style="padding: 0.25rem 0.5rem; font-size: 0.8rem; background-color: #10b981; border: none; color: white; cursor: pointer;">Complete</button>`;
+                        actionBtn = `<button class="btn btn-primary" onclick="updateBookingStatus(${h.id}, 'completed')" style="width: 100%; background: #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">Complete</button>`;
                     } else {
-                        actionBtn = '<span style="color: #6b7280; font-size: 0.8rem;">Done</span>';
+                        actionBtn = '<button class="btn btn-glass" style="width: 100%; cursor: default;" disabled>Completed</button>';
                     }
 
-                    html += `<tr>
-                        <td>${h.username || 'Unknown'}</td>
-                        <td>${h.service_name || 'N/A'}</td>
-                        <td>${h.pickup_location}</td>
-                        <td><span style="padding: 0.25rem 0.5rem; border-radius: 999px; background: #e0e7ff; color: #4338ca; font-size: 0.8rem;">${h.status}</span></td>
-                        <td>${actionBtn}</td>
-                        <td>${h.created_at}</td>
-                    </tr>`;
+                    const statusColor = h.status === 'pending' ? '#f59e0b' : (h.status === 'confirmed' ? '#6366f1' : '#10b981');
+                    const statusBg = h.status === 'pending' ? 'rgba(245, 158, 11, 0.1)' : (h.status === 'confirmed' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(16, 185, 129, 0.1)');
+
+                    html += `
+                        <div class="glass-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <h3 style="margin-bottom: 0;">${h.username || 'Guest'}</h3>
+                                <span style="padding: 0.2rem 0.6rem; border-radius: 20px; background: ${statusBg}; color: ${statusColor}; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">${h.status}</span>
+                            </div>
+                            <p class="text-muted">🚖 ${h.service_name || 'Taxi Service'}</p>
+                            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.4rem;">📍 From: ${h.pickup_location}</p>
+                            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">📅 ${new Date(h.created_at).toLocaleDateString()}</p>
+                            <div style="margin-top: 1.5rem;">
+                                ${actionBtn}
+                            </div>
+                        </div>`;
                 });
-                html += '</tbody></table>';
+                html += '</div>';
                 historyContainer.innerHTML = html;
             } catch (e) { console.error(e); }
         }
@@ -235,10 +254,8 @@
             if(!confirm(`Mark booking as ${status}?`)) return;
             try {
                 await apiFetch(`bookings.php?id=${id}`, 'PUT', { status });
-                loadStats(); // Reload table
-            } catch(e) {
-                alert(e.message);
-            }
+                loadStats();
+            } catch(e) { alert(e.message); }
         }
 
         // --- Services ---
@@ -247,22 +264,23 @@
                 const services = await apiFetch('services.php');
                 const list = document.getElementById('services-list');
                 list.innerHTML = services.map(s => `
-                    <div class="card">
-                        <h4>${s.name}</h4>
-                        <p>${s.description}</p>
-                        <p>Base: $${s.base_price} | Per KM: $${s.price_per_km}</p>
-                        <div style="margin-top: 1rem;">
-                            <button class="btn btn-secondary" onclick='editService(${JSON.stringify(s)})'>Edit</button>
-                            <button class="btn btn-danger" onclick="deleteService(${s.id})">Delete</button>
+                    <div class="glass-card">
+                        <h3 style="margin-bottom: 0.5rem;">${s.name}</h3>
+                        <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1rem;">${s.description}</p>
+                        <p style="margin-top: 1rem; font-weight: 600;">💰 $${s.base_price} Base • $${s.price_per_km}/km</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                            <button class="btn btn-glass" style="flex: 1;" onclick='editService(${JSON.stringify(s)})'>Edit</button>
+                            <button class="btn btn-glass" style="color: #ef4444;" onclick="deleteService(${s.id})">Delete</button>
                         </div>
                     </div>
                 `).join('');
             } catch (e) { console.error(e); }
         }
 
-        const serviceModal = document.getElementById('service-modal');
+        const bd = document.getElementById('modal-backdrop');
         function openServiceModal(service = null) {
-            serviceModal.style.display = 'block';
+            document.getElementById('service-modal').style.display = 'block';
+            bd.style.display = 'block';
             if (service) {
                 document.getElementById('service-id').value = service.id;
                 document.getElementById('service-name').value = service.name;
@@ -274,7 +292,10 @@
                 document.getElementById('service-id').value = '';
             }
         }
-        function closeServiceModal() { serviceModal.style.display = 'none'; }
+        function closeServiceModal() { 
+            document.getElementById('service-modal').style.display = 'none';
+            bd.style.display = 'none';
+        }
         function editService(s) { openServiceModal(s); }
 
         document.getElementById('service-form').addEventListener('submit', async (e) => {
@@ -296,7 +317,7 @@
         });
 
         async function deleteService(id) {
-            if (!confirm('Are you sure?')) return;
+            if (!confirm('Are you sure you want to delete this service?')) return;
             try { await apiFetch(`services.php?id=${id}`, 'DELETE'); loadServices(); loadStats(); } catch (err) { alert(err.message); }
         }
 
@@ -306,23 +327,25 @@
                 const vehicles = await apiFetch('vehicles.php');
                 const list = document.getElementById('vehicles-list');
                 list.innerHTML = vehicles.map(v => `
-                    <div class="card">
-                        <h4>${v.make} ${v.model}</h4>
-                        <p>License: ${v.license_plate}</p>
-                        <p>Type: ${v.type} | Capacity: ${v.capacity}</p>
-                        <p>Status: ${v.status}</p>
-                        <div style="margin-top: 1rem;">
-                            <button class="btn btn-secondary" onclick='editVehicle(${JSON.stringify(v)})'>Edit</button>
-                            <button class="btn btn-danger" onclick="deleteVehicle(${v.id})">Delete</button>
+                    <div class="glass-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 style="margin-bottom: 0;">${v.make} ${v.model}</h3>
+                            <span style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 600;">${v.status.toUpperCase()}</span>
+                        </div>
+                        <p class="text-muted">🚕 ${v.type} • 🔢 ${v.license_plate}</p>
+                        <p class="text-muted" style="margin-top: 0.5rem;">👥 Capacity: ${v.capacity} Seats</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                            <button class="btn btn-glass" style="flex: 1;" onclick='editVehicle(${JSON.stringify(v)})'>Edit</button>
+                            <button class="btn btn-glass" style="color: #ef4444;" onclick="deleteVehicle(${v.id})">Delete</button>
                         </div>
                     </div>
                 `).join('');
             } catch (e) { console.error(e); }
         }
 
-        const vehicleModal = document.getElementById('vehicle-modal');
         function openVehicleModal(vehicle = null) {
-            vehicleModal.style.display = 'block';
+            document.getElementById('vehicle-modal').style.display = 'block';
+            bd.style.display = 'block';
             if (vehicle) {
                 document.getElementById('vehicle-id').value = vehicle.id;
                 document.getElementById('vehicle-make').value = vehicle.make;
@@ -335,7 +358,10 @@
                 document.getElementById('vehicle-id').value = '';
             }
         }
-        function closeVehicleModal() { vehicleModal.style.display = 'none'; }
+        function closeVehicleModal() { 
+            document.getElementById('vehicle-modal').style.display = 'none';
+            bd.style.display = 'none';
+        }
         function editVehicle(v) { openVehicleModal(v); }
 
         document.getElementById('vehicle-form').addEventListener('submit', async (e) => {
@@ -357,7 +383,7 @@
         });
 
         async function deleteVehicle(id) {
-            if (!confirm('Are you sure?')) return;
+            if (!confirm('Delete this vehicle permanently?')) return;
             try { await apiFetch(`vehicles.php?id=${id}`, 'DELETE'); loadVehicles(); } catch (err) { alert(err.message); }
         }
 
@@ -367,23 +393,25 @@
                 const drivers = await apiFetch('drivers.php');
                 const list = document.getElementById('drivers-list');
                 list.innerHTML = drivers.map(d => `
-                    <div class="card">
-                        <h4>${d.name}</h4>
-                        <p>License: ${d.license_number}</p>
-                        <p>Phone: ${d.phone}</p>
-                        <p>Status: ${d.status}</p>
-                        <div style="margin-top: 1rem;">
-                            <button class="btn btn-secondary" onclick='editDriver(${JSON.stringify(d)})'>Edit</button>
-                            <button class="btn btn-danger" onclick="deleteDriver(${d.id})">Delete</button>
+                    <div class="glass-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 style="margin-bottom: 0;">${d.name}</h3>
+                            <span style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 600;">ACTIVE</span>
+                        </div>
+                        <p class="text-muted">📞 ${d.phone}</p>
+                        <p class="text-muted" style="margin-top: 0.5rem;">🆔 License: ${d.license_number}</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                            <button class="btn btn-glass" style="flex: 1;" onclick='editDriver(${JSON.stringify(d)})'>Edit</button>
+                            <button class="btn btn-glass" style="color: #ef4444;" onclick="deleteDriver(${d.id})">Delete</button>
                         </div>
                     </div>
                 `).join('');
             } catch (e) { console.error(e); }
         }
 
-        const driverModal = document.getElementById('driver-modal');
         function openDriverModal(driver = null) {
-            driverModal.style.display = 'block';
+            document.getElementById('driver-modal').style.display = 'block';
+            bd.style.display = 'block';
             if (driver) {
                 document.getElementById('driver-id').value = driver.id;
                 document.getElementById('driver-name').value = driver.name;
@@ -394,7 +422,10 @@
                 document.getElementById('driver-id').value = '';
             }
         }
-        function closeDriverModal() { driverModal.style.display = 'none'; }
+        function closeDriverModal() { 
+            document.getElementById('driver-modal').style.display = 'none';
+            bd.style.display = 'none';
+        }
         function editDriver(d) { openDriverModal(d); }
 
         document.getElementById('driver-form').addEventListener('submit', async (e) => {
@@ -414,7 +445,7 @@
         });
 
         async function deleteDriver(id) {
-            if (!confirm('Are you sure?')) return;
+            if (!confirm('Delete driver record?')) return;
             try { await apiFetch(`drivers.php?id=${id}`, 'DELETE'); loadDrivers(); } catch (err) { alert(err.message); }
         }
     </script>
