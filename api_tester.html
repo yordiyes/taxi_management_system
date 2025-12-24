@@ -1,112 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simple API Partner Tester</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; line-height: 1.5; }
-        .box { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 20px; background: #f9f9f9; }
-        input, button { padding: 10px; margin: 5px 0; display: block; width: 100%; box-sizing: border-box; }
-        button { background: #4f46e5; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background: #4338ca; }
-        pre { background: #eee; padding: 15px; border-radius: 4px; overflow-x: auto; font-size: 13px; min-height: 50px; }
-        h3 { margin-top: 0; }
-        .label { font-size: 12px; font-weight: bold; color: #666; margin-top: 10px; }
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.5;
+      }
+      .box {
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        background: #f9f9f9;
+      }
+      input,
+      button {
+        padding: 10px;
+        margin: 5px 0;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      button {
+        background: #4f46e5;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      button:hover {
+        background: #4338ca;
+      }
+      pre {
+        background: #eee;
+        padding: 15px;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 13px;
+        min-height: 50px;
+      }
+      h3 {
+        margin-top: 0;
+      }
+      .label {
+        font-size: 12px;
+        font-weight: bold;
+        color: #666;
+        margin-top: 10px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Partner API Sandbox</h1>
     <p>Use this simple page to test the Taxi API from any browser tab.</p>
 
     <div class="box">
-        <h3>1. Configuration</h3>
-        <div class="label">API BASE URL</div>
-        <input type="text" id="baseUrl" value="https://taxi-system.infinityfreeapp.com/api">
-        <div class="label">API KEY</div>
-        <input type="text" id="apiKey" value="TAXI_GROUP_SECURE_KEY_2024">
+      <h3>1. Configuration</h3>
+      <div class="label">API BASE URL</div>
+      <input
+        type="text"
+        id="baseUrl"
+        value="https://taxi-system.infinityfreeapp.com/api"
+      />
+      <div class="label">API KEY</div>
+      <input type="text" id="apiKey" value="TAXI_GROUP_SECURE_KEY_2024" />
     </div>
 
     <div class="box">
-        <h3>2. Get All Services (Public)</h3>
-        <button onclick="test('/services.php', 'GET')">Fetch Services</button>
+      <h3>2. Get All Services (Public)</h3>
+      <button onclick="test('/services.php', 'GET')">Fetch Services</button>
     </div>
 
     <div class="box">
-        <h3>3. Seamless Booking (Partner Integration)</h3>
-        <div class="label">USER EMAIL</div>
-        <input type="email" id="bookEmail" value="tester@gmail.com">
-        <div class="label">PICKUP LOCATION</div>
-        <input type="text" id="pickup" value="Central Mall">
-        <div class="label">DROPOFF LOCATION</div>
-        <input type="text" id="dropoff" value="Airport">
-        <div class="label">PICKUP TIME (YYYY-MM-DD HH:MM:SS)</div>
-        <input type="text" id="time" value="2025-01-01 12:00:00">
-        <button onclick="bookTaxi()">Order Taxi Seamlessly</button>
+      <h3>3. Seamless Booking (Partner Integration)</h3>
+      <div class="label">USER EMAIL</div>
+      <input type="email" id="bookEmail" value="tester@gmail.com" />
+      <div class="label">PICKUP LOCATION</div>
+      <input type="text" id="pickup" value="Central Mall" />
+      <div class="label">DROPOFF LOCATION</div>
+      <input type="text" id="dropoff" value="Airport" />
+      <div class="label">PICKUP TIME (YYYY-MM-DD HH:MM:SS)</div>
+      <input type="text" id="time" value="2025-01-01 12:00:00" />
+      <button onclick="bookTaxi()">Order Taxi Seamlessly</button>
     </div>
 
     <div class="box">
-        <h3>4. View Bookings by Email</h3>
-        <div class="label">USER EMAIL</div>
-        <input type="email" id="viewEmail" value="tester@gmail.com">
-        <button onclick="viewBookings()">Fetch History</button>
+      <h3>4. View Bookings by Email</h3>
+      <div class="label">USER EMAIL</div>
+      <input type="email" id="viewEmail" value="tester@gmail.com" />
+      <button onclick="viewBookings()">Fetch History</button>
     </div>
 
-    <div class="box" style="background: #333; color: #fff;">
-        <h3>Live Response Output</h3>
-        <pre id="output" style="background: #222; color: #0f0; border: 1px solid #444;">// Results will appear here...</pre>
+    <div class="box" style="border: 1px solid #4f46e5; background: #f0f0ff">
+      <h3 style="color: #4f46e5">
+        5. Tour Management Integration (External API)
+      </h3>
+
+      <div class="label">TOUR API BASE URL</div>
+      <input
+        type="text"
+        id="tourBaseUrl"
+        value="https://tour-management-web.onrender.com/api/v1/"
+      />
+      <div class="label">TOUR API KEY</div>
+      <input type="text" id="tourApiKey" value="demo-api-key" />
+
+      <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc" />
+
+      <h4>Explore Places</h4>
+      <div class="label">Search Query (optional)</div>
+      <input type="text" id="placeQuery" placeholder="e.g. Paris" />
+      <button onclick="getPlaces()" style="background: #059669">
+        Fetch Places
+      </button>
+
+      <h4>Find Tours</h4>
+      <div class="label">Search Query (optional)</div>
+      <input type="text" id="tourQuery" placeholder="e.g. Walking Tour" />
+      <button onclick="getTours()" style="background: #059669">
+        Fetch Tours
+      </button>
+
+      <h4>Book a Tour</h4>
+      <div class="label">Tour ID</div>
+      <input type="number" id="bookTourId" value="1" />
+      <div class="label">User Email</div>
+      <input
+        type="email"
+        id="bookTourEmail"
+        value="partner-guest@example.com"
+      />
+      <div class="label">Guest Name</div>
+      <input type="text" id="bookTourName" value="Guest from Partner" />
+      <button onclick="bookTour()" style="background: #059669">
+        Book Tour
+      </button>
+    </div>
+
+    <div class="box" style="background: #333; color: #fff">
+      <h3>Live Response Output</h3>
+      <pre
+        id="output"
+        style="background: #222; color: #0f0; border: 1px solid #444"
+      >
+// Results will appear here...</pre
+      >
     </div>
 
     <script>
-        const output = document.getElementById('output');
+      const output = document.getElementById("output");
 
-        async function test(path, method, body = null) {
-            output.innerText = "// Sending request...";
-            const url = document.getElementById('baseUrl').value + path;
-            const key = document.getElementById('apiKey').value;
+      async function test(path, method, body = null) {
+        output.innerText = "// Sending request...";
+        const url = document.getElementById("baseUrl").value + path;
+        const key = document.getElementById("apiKey").value;
 
-            try {
-                const options = {
-                    method: method,
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'X-API-KEY': key
-                    }
-                };
-                if (method === 'GET' && path.includes('.php')) {
-                    // Inject key into URL for GET if needed
-                    const finalUrl = new URL(url);
-                    finalUrl.searchParams.append('api_key', key);
-                    var reqUrl = finalUrl.toString();
-                } else if (body) {
-                    options.body = JSON.stringify(body);
-                    var reqUrl = url;
-                } else {
-                    var reqUrl = url;
-                }
+        try {
+          const options = {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-KEY": key,
+            },
+          };
+          if (method === "GET" && path.includes(".php")) {
+            // Inject key into URL for GET if needed
+            const finalUrl = new URL(url);
+            finalUrl.searchParams.append("api_key", key);
+            var reqUrl = finalUrl.toString();
+          } else if (body) {
+            options.body = JSON.stringify(body);
+            var reqUrl = url;
+          } else {
+            var reqUrl = url;
+          }
 
-                const response = await fetch(reqUrl, options);
-                const data = await response.json();
-                output.innerText = JSON.stringify(data, null, 2);
-            } catch (err) {
-                output.innerText = "Error: " + err.message + "\nCheck browser console for details (F12).";
-            }
+          const response = await fetch(reqUrl, options);
+          const data = await response.json();
+          output.innerText = JSON.stringify(data, null, 2);
+        } catch (err) {
+          output.innerText =
+            "Error: " +
+            err.message +
+            "\nCheck browser console for details (F12).";
+        }
+      }
+
+      function bookTaxi() {
+        const body = {
+          email: document.getElementById("bookEmail").value,
+          pickup_location: document.getElementById("pickup").value,
+          dropoff_location: document.getElementById("dropoff").value,
+          pickup_time: document.getElementById("time").value,
+        };
+        test("/bookings.php", "POST", body);
+      }
+
+      function viewBookings() {
+        const email = document.getElementById("viewEmail").value;
+        test("/bookings.php?email=" + encodeURIComponent(email), "GET");
+      }
+
+      // Tour Management API Functions
+      async function callTourApi(
+        endpoint,
+        method,
+        body = null,
+        queryParams = {}
+      ) {
+        output.innerText = "// Sending request to Tour API...";
+        const baseUrl = document.getElementById("tourBaseUrl").value;
+        const key = document.getElementById("tourApiKey").value;
+
+        // Remove trailing slash from baseUrl if present and leading slash from endpoint if present to avoid double slashes
+        const cleanBaseUrl = baseUrl.replace(/\/$/, "");
+        const cleanEndpoint = endpoint.replace(/^\//, "");
+        let urlObj = new URL(cleanBaseUrl + "/" + cleanEndpoint);
+
+        // Add query params
+        Object.keys(queryParams).forEach((k) => {
+          if (queryParams[k]) urlObj.searchParams.append(k, queryParams[k]);
+        });
+
+        const options = {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": key,
+          },
+        };
+
+        if (body) {
+          options.body = JSON.stringify(body);
         }
 
-        function bookTaxi() {
-            const body = {
-                email: document.getElementById('bookEmail').value,
-                pickup_location: document.getElementById('pickup').value,
-                dropoff_location: document.getElementById('dropoff').value,
-                pickup_time: document.getElementById('time').value
-            };
-            test('/bookings.php', 'POST', body);
+        try {
+          const response = await fetch(urlObj.toString(), options);
+          const data = await response.json();
+          output.innerText = JSON.stringify(data, null, 2);
+        } catch (err) {
+          output.innerText =
+            "Error: " +
+            err.message +
+            "\nCheck browser console for details (F12).";
         }
+      }
 
-        function viewBookings() {
-            const email = document.getElementById('viewEmail').value;
-            test('/bookings.php?email=' + encodeURIComponent(email), 'GET');
-        }
+      function getPlaces() {
+        const q = document.getElementById("placeQuery").value;
+        callTourApi("places.php", "GET", null, { q });
+      }
+
+      function getTours() {
+        const q = document.getElementById("tourQuery").value;
+        callTourApi("tours.php", "GET", null, { q });
+      }
+
+      function bookTour() {
+        const body = {
+          tour_id: document.getElementById("bookTourId").value,
+          email: document.getElementById("bookTourEmail").value,
+          name: document.getElementById("bookTourName").value,
+        };
+        callTourApi("tours.php", "POST", body);
+      }
     </script>
-</body>
+  </body>
 </html>

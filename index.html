@@ -70,110 +70,39 @@
         <!-- Browse Places -->
         <div id="tab-browse" class="tab-content">
           <h3>Browse Popular Destinations</h3>
-          <div class="grid">
-            <div class="card">
-              <img
-                src="https://via.placeholder.com/400x200/6366f1/ffffff?text=Paris"
-                alt="Paris"
-                style="
-                  width: 100%;
-                  border-radius: var(--radius);
-                  margin-bottom: 1rem;
-                "
-              />
-              <h4>Paris, France</h4>
-              <p>
-                Experience the city of love and lights. Visit the Eiffel Tower,
-                Louvre Museum, and more.
-              </p>
-              <button
-                class="btn btn-primary"
-                onclick="alert('Detailed information about Paris would be provided by Tour Management Group')"
-              >
-                View Details
-              </button>
-            </div>
-            <div class="card">
-              <img
-                src="https://via.placeholder.com/400x200/ec4899/ffffff?text=Tokyo"
-                alt="Tokyo"
-                style="
-                  width: 100%;
-                  border-radius: var(--radius);
-                  margin-bottom: 1rem;
-                "
-              />
-              <h4>Tokyo, Japan</h4>
-              <p>
-                A perfect blend of ultramodern and traditional culture. Explore
-                temples, tech, and cuisine.
-              </p>
-              <button
-                class="btn btn-primary"
-                onclick="alert('Detailed information about Tokyo would be provided by Tour Management Group')"
-              >
-                View Details
-              </button>
-            </div>
-            <div class="card">
-              <img
-                src="https://via.placeholder.com/400x200/8b5cf6/ffffff?text=New+York"
-                alt="New York"
-                style="
-                  width: 100%;
-                  border-radius: var(--radius);
-                  margin-bottom: 1rem;
-                "
-              />
-              <h4>New York, USA</h4>
-              <p>
-                The city that never sleeps. Broadway, Central Park, Statue of
-                Liberty await you.
-              </p>
-              <button
-                class="btn btn-primary"
-                onclick="alert('Detailed information about New York would be provided by Tour Management Group')"
-              >
-                View Details
-              </button>
-            </div>
+          <div id="places-list" class="grid">
+            <p>Loading places...</p>
           </div>
         </div>
 
-        <!-- Travel Tickets (Mock - Tour Management) -->
+        <!-- Tours (formerly Travel Tickets) -->
         <div id="tab-tickets" class="tab-content hidden">
           <div class="card">
-            <h3>Book Travel Tickets</h3>
+            <h3>Find and Book Tours</h3>
             <p style="color: #6b7280; margin-bottom: 1.5rem">
-              Connects to Tour Management Group Service (Group 1, 5, 9)
+              Powered by Tour Management Group
             </p>
-            <form
-              onsubmit="event.preventDefault(); alert('Searching for tickets via Tour Management Service...');"
-            >
-              <div class="grid">
-                <div class="form-group">
-                  <label>From</label>
-                  <input type="text" placeholder="Departure City" required />
-                </div>
-                <div class="form-group">
-                  <label>To</label>
-                  <input type="text" placeholder="Destination City" required />
-                </div>
-                <div class="form-group">
-                  <label>Departure Date</label>
-                  <input type="date" required />
-                </div>
-                <div class="form-group">
-                  <label>Travel Type</label>
-                  <select>
-                    <option>Flight</option>
-                    <option>Train</option>
-                    <option>Bus</option>
-                  </select>
-                </div>
-              </div>
-              <button class="btn btn-primary">Search Tickets</button>
-            </form>
+
+            <div style="margin-bottom: 20px; display: flex; gap: 10px">
+              <input
+                type="text"
+                id="tour-search"
+                placeholder="Search tours..."
+                style="
+                  flex: 1;
+                  padding: 10px;
+                  border: 1px solid #ccc;
+                  border-radius: 4px;
+                "
+              />
+              <button onclick="loadTours()" class="btn btn-primary">
+                Search
+              </button>
+            </div>
+
+            <div id="tours-list" class="grid">
+              <p>Loading tours...</p>
+            </div>
           </div>
         </div>
 
@@ -184,10 +113,10 @@
             <p style="color: #6b7280; margin-bottom: 1.5rem">
               Connects to Hotel Management Group Service (Group 2, 4)
             </p>
-            
+
             <!-- Dynamic List Container -->
             <div id="hotel-list" class="grid">
-                 <p>Click "Hotels" to load data...</p>
+              <p>Click "Hotels" to load data...</p>
             </div>
           </div>
         </div>
@@ -325,11 +254,122 @@
         document
           .querySelectorAll(".tab-btn")
           .forEach((el) => el.classList.remove("active"));
-        const btn = document.querySelector(`button[onclick="switchTab('${tabName}')"]`);
-        if(btn) btn.classList.add('active');
+        const btn = document.querySelector(
+          `button[onclick="switchTab('${tabName}')"]`
+        );
+        if (btn) btn.classList.add("active");
 
         if (tabName === "taxi") loadTaxis();
         else if (tabName === "hotel") loadHotels(); // FETCH FROM GROUP 2
+        else if (tabName === "browse") loadPlaces();
+        else if (tabName === "tickets") loadTours();
+      }
+
+      // --- TOUR MANAGEMENT INTEGRATION ---
+      const TOUR_API_BASE = "https://tour-management-web.onrender.com/api/v1/";
+      const TOUR_API_KEY = "demo-api-key";
+
+      async function fetchTourApi(
+        endpoint,
+        method = "GET",
+        body = null,
+        queryParams = {}
+      ) {
+        let url = new URL(TOUR_API_BASE + endpoint);
+        Object.keys(queryParams).forEach((key) => {
+          if (queryParams[key]) url.searchParams.append(key, queryParams[key]);
+        });
+
+        const options = {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": TOUR_API_KEY,
+          },
+        };
+        if (body) options.body = JSON.stringify(body);
+
+        const res = await fetch(url, options);
+        return await res.json();
+      }
+
+      async function loadPlaces() {
+        const list = document.getElementById("places-list");
+        list.innerHTML = "<p>Loading places...</p>";
+        try {
+          const res = await fetchTourApi("places.php");
+          if (!res.data || res.data.length === 0) {
+            list.innerHTML = "<p>No places found.</p>";
+            return;
+          }
+          list.innerHTML = res.data
+            .map(
+              (p) => `
+                  <div class="card">
+                      <img src="https://via.placeholder.com/400x200/6366f1/ffffff?text=${encodeURIComponent(
+                        p.name
+                      )}" style="width: 100%; border-radius: var(--radius); margin-bottom: 1rem;">
+                      <h4>${p.name}</h4>
+                      <p>${p.type || "Destination"}</p>
+                      <button class="btn btn-primary" onclick="alert('View details for ${
+                        p.name
+                      }')">View Details</button>
+                  </div>
+              `
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+          list.innerHTML = '<p style="color:red">Error loading places.</p>';
+        }
+      }
+
+      async function loadTours() {
+        const list = document.getElementById("tours-list");
+        const q = document.getElementById("tour-search").value;
+        list.innerHTML = "<p>Loading tours...</p>";
+        try {
+          const res = await fetchTourApi("tours.php", "GET", null, { q });
+          if (!res.data || res.data.length === 0) {
+            list.innerHTML = "<p>No tours found.</p>";
+            return;
+          }
+          list.innerHTML = res.data
+            .map(
+              (t) => `
+                  <div class="card">
+                      <h4>${t.title}</h4>
+                      <p><strong>Location:</strong> ${t.location}</p>
+                      <p><strong>Price:</strong> $${t.price}</p>
+                      <p><strong>Date:</strong> ${t.schedule_date}</p>
+                      <button class="btn btn-primary" onclick="bookTourPrompt(${t.id}, '${t.title}')">Book Now</button>
+                  </div>
+              `
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+          list.innerHTML = '<p style="color:red">Error loading tours.</p>';
+        }
+      }
+
+      async function bookTourPrompt(tourId, tourTitle) {
+        const email = prompt(
+          `Enter your email to book "${tourTitle}":`,
+          "guest@example.com"
+        );
+        if (!email) return;
+
+        try {
+          const res = await fetchTourApi("tours.php", "POST", {
+            tour_id: tourId,
+            email: email,
+            name: "Guest User",
+          });
+          alert("Booking Response: " + JSON.stringify(res));
+        } catch (e) {
+          alert("Booking failed: " + e.message);
+        }
       }
 
       function showSection(sectionId) {
@@ -341,42 +381,46 @@
 
       // --- EXTERNAL INTEGRATION EXAMPLE (HOTELS) ---
       async function loadHotels() {
-          const list = document.getElementById('hotel-list');
-          list.innerHTML = '<p>Loading hotels from Group 2...</p>';
-          
-          try {
-              // TODO: Replace this URL with the actual API from Group 2
-              // const res = await fetch('http://localhost/hotel_management/api/rooms.php');
-              // const hotels = await res.json();
-              
-              // MOCK DATA (Simulating what their API would return)
-              const hotels = [
-                  { name: 'Grand Luxury Hotel (From API)', rating: 5, price: 250 },
-                  { name: 'Cozy Inn (From API)', rating: 3, price: 80 },
-                  { name: 'Business Suites (From API)', rating: 4, price: 150 }
-              ];
+        const list = document.getElementById("hotel-list");
+        list.innerHTML = "<p>Loading hotels from Group 2...</p>";
 
-              // Simulate network delay
-              await new Promise(r => setTimeout(r, 500));
+        try {
+          // TODO: Replace this URL with the actual API from Group 2
+          // const res = await fetch('http://localhost/hotel_management/api/rooms.php');
+          // const hotels = await res.json();
 
-              if (hotels.length === 0) {
-                  list.innerHTML = '<p>No hotels found.</p>';
-                  return;
-              }
+          // MOCK DATA (Simulating what their API would return)
+          const hotels = [
+            { name: "Grand Luxury Hotel (From API)", rating: 5, price: 250 },
+            { name: "Cozy Inn (From API)", rating: 3, price: 80 },
+            { name: "Business Suites (From API)", rating: 4, price: 150 },
+          ];
 
-              list.innerHTML = hotels.map(h => `
+          // Simulate network delay
+          await new Promise((r) => setTimeout(r, 500));
+
+          if (hotels.length === 0) {
+            list.innerHTML = "<p>No hotels found.</p>";
+            return;
+          }
+
+          list.innerHTML = hotels
+            .map(
+              (h) => `
                   <div class="card" style="border: 1px solid #e5e7eb; box-shadow: none;">
                       <h4>${h.name}</h4>
-                      <p>${'⭐'.repeat(h.rating)}</p>
+                      <p>${"⭐".repeat(h.rating)}</p>
                       <p>$${h.price}/night</p>
                       <button class="btn btn-secondary" onclick="alert('This would send a request to the Hotel Group API or redirect to their booking page')">Reserve Now</button>
                   </div>
-              `).join('');
-
-          } catch (e) {
-              console.error(e);
-              list.innerHTML = '<p style="color:red">Error loading hotels from external service.</p>';
-          }
+              `
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+          list.innerHTML =
+            '<p style="color:red">Error loading hotels from external service.</p>';
+        }
       }
 
       // Load Taxis
