@@ -11,11 +11,16 @@
 <body>
     <header>
         <nav>
-            <a href="index.html" class="logo">Provider Hub</a>
+            <a href="index.html" class="logo">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
             <ul class="nav-links" id="nav-list">
                 <li><a href="#" class="active" onclick="showSection('stats')">Overview</a></li>
                 <li><a href="#" onclick="showSection('services')">Services</a></li>
-                <li><a href="#" onclick="showSection('vehicles')">Vehicles</a></li>
                 <li><a href="#" onclick="showSection('drivers')">Drivers</a></li>
                 <li><a href="#" onclick="logout()">Logout</a></li>
             </ul>
@@ -62,14 +67,6 @@
             <div id="services-list" class="grid"></div>
         </section>
 
-        <!-- Vehicle Management -->
-        <section id="vehicles" class="section hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0;">
-                <h1>Manage Vehicles</h1>
-                <button class="btn btn-primary" onclick="openVehicleModal()">+ Add New Vehicle</button>
-            </div>
-            <div id="vehicles-list" class="grid"></div>
-        </section>
 
         <!-- Driver Management -->
         <section id="drivers" class="section hidden">
@@ -82,9 +79,16 @@
     </main>
 
     <!-- Add Service Modal -->
-    <div id="service-modal" class="glass-card"
-        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 480px; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
-        <h3>Add/Edit Service</h3>
+    <div id="service-modal" class="glass-card modal-container"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0;">Add/Edit Service</h3>
+            <button type="button" onclick="closeServiceModal()" class="modal-close-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
         <form id="service-form" class="mt-8">
             <input type="hidden" id="service-id">
             <div class="form-group">
@@ -112,51 +116,18 @@
         </form>
     </div>
 
-    <!-- Add Vehicle Modal -->
-    <div id="vehicle-modal" class="glass-card"
-        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 480px; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
-        <h3>Add/Edit Vehicle</h3>
-        <form id="vehicle-form" class="mt-8">
-            <input type="hidden" id="vehicle-id">
-            <div class="grid" style="margin: 0;">
-                <div class="form-group">
-                    <label>Make</label>
-                    <input type="text" id="vehicle-make" class="form-control" required placeholder="Tesla">
-                </div>
-                <div class="form-group">
-                    <label>Model</label>
-                    <input type="text" id="vehicle-model" class="form-control" required placeholder="Model S">
-                </div>
-            </div>
-            <div class="form-group">
-                <label>License Plate</label>
-                <input type="text" id="vehicle-license" class="form-control" required placeholder="ABC-1234">
-            </div>
-            <div class="grid" style="margin: 0;">
-                <div class="form-group">
-                    <label>Type</label>
-                    <select id="vehicle-type" class="form-control">
-                        <option value="Sedan">Sedan</option>
-                        <option value="SUV">SUV</option>
-                        <option value="Van">Van</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Capacity</label>
-                    <input type="number" id="vehicle-capacity" class="form-control" required>
-                </div>
-            </div>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
-                <button type="button" class="btn btn-glass" onclick="closeVehicleModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Save Vehicle</button>
-            </div>
-        </form>
-    </div>
 
     <!-- Add Driver Modal -->
-    <div id="driver-modal" class="glass-card"
-        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 440px; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
-        <h3>Add/Edit Driver</h3>
+    <div id="driver-modal" class="glass-card modal-container"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 440px; max-height: 85vh; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0;">Add/Edit Driver</h3>
+            <button type="button" onclick="closeDriverModal()" class="modal-close-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
         <form id="driver-form" class="mt-8">
             <input type="hidden" id="driver-id">
             <div class="form-group">
@@ -193,7 +164,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadStats();
             loadServices();
-            loadVehicles();
             loadDrivers();
         });
 
@@ -278,6 +248,26 @@
         }
 
         const bd = document.getElementById('modal-backdrop');
+        
+        // Close modal when clicking on backdrop
+        bd.addEventListener('click', (e) => {
+            if (e.target === bd) {
+                // Close whichever modal is currently open
+                const serviceModal = document.getElementById('service-modal');
+                const driverModal = document.getElementById('driver-modal');
+                
+                if (serviceModal.style.display === 'block') closeServiceModal();
+                if (driverModal.style.display === 'block') closeDriverModal();
+            }
+        });
+        
+        // Prevent modal from closing when clicking inside it
+        document.querySelectorAll('.modal-container').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+        
         function openServiceModal(service = null) {
             document.getElementById('service-modal').style.display = 'block';
             bd.style.display = 'block';
@@ -321,71 +311,6 @@
             try { await apiFetch(`services.php?id=${id}`, 'DELETE'); loadServices(); loadStats(); } catch (err) { alert(err.message); }
         }
 
-        // --- Vehicles ---
-        async function loadVehicles() {
-            try {
-                const vehicles = await apiFetch('vehicles.php');
-                const list = document.getElementById('vehicles-list');
-                list.innerHTML = vehicles.map(v => `
-                    <div class="glass-card">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <h3 style="margin-bottom: 0;">${v.make} ${v.model}</h3>
-                            <span style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 600;">${v.status.toUpperCase()}</span>
-                        </div>
-                        <p class="text-muted">🚕 ${v.type} • 🔢 ${v.license_plate}</p>
-                        <p class="text-muted" style="margin-top: 0.5rem;">👥 Capacity: ${v.capacity} Seats</p>
-                        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
-                            <button class="btn btn-glass" style="flex: 1;" onclick='editVehicle(${JSON.stringify(v)})'>Edit</button>
-                            <button class="btn btn-glass" style="color: #ef4444;" onclick="deleteVehicle(${v.id})">Delete</button>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) { console.error(e); }
-        }
-
-        function openVehicleModal(vehicle = null) {
-            document.getElementById('vehicle-modal').style.display = 'block';
-            bd.style.display = 'block';
-            if (vehicle) {
-                document.getElementById('vehicle-id').value = vehicle.id;
-                document.getElementById('vehicle-make').value = vehicle.make;
-                document.getElementById('vehicle-model').value = vehicle.model;
-                document.getElementById('vehicle-license').value = vehicle.license_plate;
-                document.getElementById('vehicle-type').value = vehicle.type;
-                document.getElementById('vehicle-capacity').value = vehicle.capacity;
-            } else {
-                document.getElementById('vehicle-form').reset();
-                document.getElementById('vehicle-id').value = '';
-            }
-        }
-        function closeVehicleModal() { 
-            document.getElementById('vehicle-modal').style.display = 'none';
-            bd.style.display = 'none';
-        }
-        function editVehicle(v) { openVehicleModal(v); }
-
-        document.getElementById('vehicle-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('vehicle-id').value;
-            const data = {
-                make: document.getElementById('vehicle-make').value,
-                model: document.getElementById('vehicle-model').value,
-                license_plate: document.getElementById('vehicle-license').value,
-                type: document.getElementById('vehicle-type').value,
-                capacity: document.getElementById('vehicle-capacity').value
-            };
-            try {
-                if (id) await apiFetch(`vehicles.php?id=${id}`, 'PUT', data);
-                else await apiFetch('vehicles.php', 'POST', data);
-                closeVehicleModal();
-                loadVehicles();
-            } catch (err) { alert(err.message); }
-        });
-
-        async function deleteVehicle(id) {
-            if (!confirm('Delete this vehicle permanently?')) return;
-            try { await apiFetch(`vehicles.php?id=${id}`, 'DELETE'); loadVehicles(); } catch (err) { alert(err.message); }
-        }
 
         // --- Drivers ---
         async function loadDrivers() {

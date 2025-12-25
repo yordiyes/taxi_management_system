@@ -5,15 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Global Tourism Hub - Tourist Services</title>
     <link rel="stylesheet" href="css/modern.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <header>
       <nav>
-        <a href="#" class="logo" onclick="showSection('home')">Global Tourism Hub</a>
+        <a href="#" class="logo" onclick="showSection('home')">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
         <ul class="nav-links" id="nav-list">
           <li><a href="#" class="active" onclick="showSection('home')">Home</a></li>
           <li id="auth-link"><a href="login.html">Login</a></li>
@@ -24,27 +29,78 @@
     <main class="container">
       <!-- Hero Section -->
       <section id="home" class="section hero">
-        <h1>Discover Your Next<br>Digital Adventure</h1>
-        <p>Your premium gateway to seamless travel, luxury stays, and elite taxi services worldwide.</p>
-        <div class="cta-group">
-          <button onclick="showSection('services')" class="btn btn-primary">Start Exploring</button>
-          <a href="#services" class="btn btn-glass">Learn More</a>
+        <div class="hero-content">
+          <!-- <span class="hero-badge">Welcome to Global Tourism</span> -->
+          <h1>Your Journey <span class="gradient-text">Starts Here</span></h1>
+          <p>Experience seamless travel planning with premium accommodations, curated tours, exquisite dining, and reliable transportation—all in one place.</p>
+          <div class="cta-group">
+            <button onclick="showSection('services')" class="btn btn-primary">
+              <span>Explore Services</span>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <a href="#services" class="btn btn-secondary">View All</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">10K+</span>
+              <span class="stat-label">Happy Travelers</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">500+</span>
+              <span class="stat-label">Destinations</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">24/7</span>
+              <span class="stat-label">Support</span>
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- Services Section -->
       <section id="services" class="section hidden">
         <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('browse')">Browse Places</button>
-          <button class="tab-btn" onclick="switchTab('tickets')">Tours</button>
-          <button class="tab-btn" onclick="switchTab('hotel')">Hotels</button>
-          <button class="tab-btn" onclick="switchTab('restaurant')">Restaurants</button>
-          <button class="tab-btn" onclick="switchTab('taxi')">Taxis</button>
+          <button class="tab-btn active" onclick="switchTab('browse')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 2L3 7V17H8V12H12V17H17V7L10 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Browse Places</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('tickets')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 6H18M2 10H18M2 14H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M4 2V4M16 2V4M4 18V16M16 18V16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Tours</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('hotel')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 10L10 3L17 10V17H13V12H7V17H3V10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Hotels</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('restaurant')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 2V18M6 6H14M6 10H14M6 14H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>Restaurants</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('taxi')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 10H17M5 6L3 10V14H5M15 6L17 10V14H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="7" cy="14" r="1.5" fill="currentColor"/>
+              <circle cx="13" cy="14" r="1.5" fill="currentColor"/>
+            </svg>
+            <span>Taxis</span>
+          </button>
         </div>
 
         <!-- Browse Places -->
         <div id="tab-browse" class="tab-content transition-fade">
-          <h2 class="section-title">Popular Destinations</h2>
+          <h2 class="section-title">Discover Amazing Places</h2>
+          <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Explore curated destinations handpicked by travel experts</p>
           <div id="places-list" class="grid">
             <p class="text-muted">Loading places...</p>
           </div>
@@ -53,8 +109,8 @@
         <!-- Tours -->
         <div id="tab-tickets" class="tab-content hidden transition-fade">
           <div class="glass-card">
-            <h2 class="section-title">Find & Book Tours</h2>
-            <p class="text-muted">Explore hand-picked adventures guided by local experts.</p>
+            <h2 class="section-title">Curated Travel Experiences</h2>
+            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Discover unforgettable adventures guided by local experts</p>
 
             <div class="search-box glass-card" style="padding: 1rem; display: flex; gap: 1rem; margin-bottom: 2rem;">
               <input type="text" id="tour-search" class="form-control" placeholder="Search destinations..." style="flex: 1;">
@@ -70,8 +126,8 @@
         <!-- Hotels -->
         <div id="tab-hotel" class="tab-content hidden transition-fade">
           <div class="glass-card">
-            <h2 class="section-title">Luxury Accommodations</h2>
-            <p class="text-muted">Premier stays curated for your comfort and style.</p>
+            <h2 class="section-title">Premium Stays</h2>
+            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Luxury accommodations tailored to your comfort and style</p>
             <div id="hotel-list" class="grid">
               <p class="text-muted">Loading available rooms...</p>
             </div>
@@ -81,8 +137,8 @@
         <!-- Restaurants -->
         <div id="tab-restaurant" class="tab-content hidden transition-fade">
           <div class="glass-card">
-            <h2 class="section-title">Exquisite Dining</h2>
-            <p class="text-muted">Reserve your table at the city's highest-rated culinary spots.</p>
+            <h2 class="section-title">Culinary Excellence</h2>
+            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Reserve your table at the finest restaurants in town</p>
             <div class="grid">
               <div class="glass-card">
                 <h3>The Gourmet Kitchen</h3>
@@ -112,8 +168,8 @@
         <!-- Taxis -->
         <div id="tab-taxi" class="tab-content hidden transition-fade">
           <div class="glass-card" style="margin-bottom: 3rem;">
-            <h2 class="section-title">Premium Taxi Service</h2>
-            <p class="text-muted">Fast, reliable, and professional transport at your fingertips.</p>
+            <h2 class="section-title">Reliable Transportation</h2>
+            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Professional drivers and premium vehicles for your journey</p>
             
             <form id="taxi-booking-form" class="mt-8">
               <input type="hidden" id="service-id-input">

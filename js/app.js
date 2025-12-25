@@ -90,8 +90,20 @@ function updateNav() {
       navList.innerHTML = `
         <li><a href="#" onclick="showSection('stats')">Overview</a></li>
         <li><a href="#" onclick="showSection('services')">Services</a></li>
-        <li><a href="#" onclick="showSection('vehicles')">Vehicles</a></li>
         <li><a href="#" onclick="showSection('drivers')">Drivers</a></li>
+        <li><a href="index.html">Tourist View</a></li>
+        <li><a href="#" onclick="logout()">Logout (${user.username})</a></li>
+      `;
+    }
+    return;
+  }
+  
+  // Special handling for Driver Dashboard
+  if (window.location.pathname.includes("driver_dashboard.html")) {
+    if (user && user.role === "driver") {
+      navList.innerHTML = `
+        <li><a href="#" class="active" onclick="showSection('cars')">My Cars</a></li>
+        <li><a href="#" onclick="showSection('bookings')">Bookings</a></li>
         <li><a href="index.html">Tourist View</a></li>
         <li><a href="#" onclick="logout()">Logout (${user.username})</a></li>
       `;
@@ -103,6 +115,8 @@ function updateNav() {
     let links = "";
     if (user.role === "admin" || user.role === "manager") {
       links += `<li><a href="provider_dashboard.html">Dashboard</a></li>`;
+    } else if (user.role === "driver") {
+      links += `<li><a href="driver_dashboard.html">Driver Dashboard</a></li>`;
     }
     links += `<li><a href="index.html">Tourist View</a></li>`;
     links += `<li><a href="#" onclick="logout()">Logout (${user.username})</a></li>`;

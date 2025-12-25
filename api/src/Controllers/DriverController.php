@@ -62,7 +62,20 @@ class DriverController {
         $data = json_decode(file_get_contents("php://input"));
 
         if(!empty($data->name) && !empty($data->license_number)) {
-            $query = "INSERT INTO drivers SET name=:name, license_number=:license_number, phone=:phone, vehicle_id=:vehicle_id, status=:status";
+            // If user_id is provided, use it; otherwise require admin/manager
+            $user_id = null;
+            if (!empty($data->user_id)) {
+                $user_id = $data->user_id;
+            } elseif (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'manager')) {
+                // Admin/Manager can create drivers without user_id (legacy support)
+                $user_id = null;
+            } else {
+                http_response_code(400);
+                echo json_encode(array("message" => "user_id is required."));
+                exit();
+            }
+
+            $query = "INSERT INTO drivers SET user_id=:user_id, name=:name, license_number=:license_number, phone=:phone, vehicle_id=:vehicle_id, status=:status";
             $stmt = $this->db->prepare($query);
 
             $data->name = htmlspecialchars(strip_tags($data->name));
@@ -71,6 +84,7 @@ class DriverController {
             $data->vehicle_id = !empty($data->vehicle_id) ? $data->vehicle_id : null;
             $data->status = isset($data->status) ? $data->status : 'available';
 
+            $stmt->bindParam(":user_id", $user_id);
             $stmt->bindParam(":name", $data->name);
             $stmt->bindParam(":license_number", $data->license_number);
             $stmt->bindParam(":phone", $data->phone);

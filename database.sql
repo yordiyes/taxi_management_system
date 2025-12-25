@@ -9,31 +9,35 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'manager', 'customer') DEFAULT 'customer',
+    role ENUM('admin', 'manager', 'customer', 'driver') DEFAULT 'customer',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Vehicles Table
 CREATE TABLE IF NOT EXISTS vehicles (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    driver_id INT,
     make VARCHAR(50) NOT NULL,
     model VARCHAR(50) NOT NULL,
     license_plate VARCHAR(20) NOT NULL UNIQUE,
     type VARCHAR(30) NOT NULL, -- e.g., Sedan, SUV, Van
     capacity INT NOT NULL,
     status ENUM('available', 'maintenance', 'booked') DEFAULT 'available',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE SET NULL
 );
 
 -- Drivers Table
 CREATE TABLE IF NOT EXISTS drivers (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
     name VARCHAR(100) NOT NULL,
     license_number VARCHAR(50) NOT NULL UNIQUE,
     phone VARCHAR(20) NOT NULL,
     vehicle_id INT,
     status ENUM('available', 'on_trip', 'off_duty') DEFAULT 'available',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL
 );
 

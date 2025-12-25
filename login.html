@@ -12,7 +12,13 @@
 <body>
     <header>
         <nav>
-            <a href="index.html" class="logo">Global Tourism Hub</a>
+            <a href="index.html" class="logo">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
             <ul class="nav-links" id="nav-list">
                 <!-- Nav items injected by JS -->
             </ul>
@@ -58,7 +64,14 @@
             try {
                 const data = await apiFetch('auth.php?action=login', 'POST', { email, password });
                 setUser(data.user);
-                window.location.href = 'index.html';
+                // Redirect based on role
+                if (data.user.role === 'driver') {
+                    window.location.href = 'driver_dashboard.html';
+                } else if (data.user.role === 'admin' || data.user.role === 'manager') {
+                    window.location.href = 'provider_dashboard.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
             } catch (error) {
                 messageDiv.innerHTML = `<div style="color: var(--danger); background: #fee2e2; padding: 0.75rem; border-radius: var(--radius); margin-bottom: 1rem;">${error.message}</div>`;
             }

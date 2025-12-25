@@ -39,6 +39,29 @@ class VehicleController {
     }
 
     private function getAllVehicles() {
+        $this->checkSession();
+        
+        // If driver, only show their vehicles
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'driver') {
+            $driver_query = "SELECT id FROM drivers WHERE user_id = ?";
+            $driver_stmt = $this->db->prepare($driver_query);
+            $driver_stmt->bindParam(1, $_SESSION['user_id']);
+            $driver_stmt->execute();
+            $driver_row = $driver_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($driver_row) {
+                $query = "SELECT * FROM vehicles WHERE driver_id = ? ORDER BY created_at DESC";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(1, $driver_row['id']);
+                $stmt->execute();
+                $vehicles = array();
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) array_push($vehicles, $row);
+                echo json_encode($vehicles);
+                return;
+            }
+        }
+        
+        // Admin/Manager view all vehicles
         $query = "SELECT * FROM vehicles ORDER BY created_at DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
@@ -62,7 +85,24 @@ class VehicleController {
         $data = json_decode(file_get_contents("php://input"));
 
         if(!empty($data->make) && !empty($data->model) && !empty($data->license_plate)) {
-            $query = "INSERT INTO vehicles SET make=:make, model=:model, license_plate=:license_plate, type=:type, capacity=:capacity, status=:status";
+            // Get driver_id if user is a driver
+            $driver_id = null;
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'driver') {
+                $driver_query = "SELECT id FROM drivers WHERE user_id = ?";
+                $driver_stmt = $this->db->prepare($driver_query);
+                $driver_stmt->bindParam(1, $_SESSION['user_id']);
+                $driver_stmt->execute();
+                $driver_row = $driver_stmt->fetch(PDO::FETCH_ASSOC);
+                if ($driver_row) {
+                    $driver_id = $driver_row['id'];
+                } else {
+                    http_response_code(403);
+                    echo json_encode(array("message" => "Driver profile not found. Please contact administrator."));
+                    exit();
+                }
+            }
+
+            $query = "INSERT INTO vehicles SET driver_id=:driver_id, make=:make, model=:model, license_plate=:license_plate, type=:type, capacity=:capacity, status=:status";
             $stmt = $this->db->prepare($query);
 
             $data->make = htmlspecialchars(strip_tags($data->make));
@@ -72,6 +112,7 @@ class VehicleController {
             $data->capacity = htmlspecialchars(strip_tags($data->capacity));
             $data->status = isset($data->status) ? $data->status : 'available';
 
+            $stmt->bindParam(":driver_id", $driver_id);
             $stmt->bindParam(":make", $data->make);
             $stmt->bindParam(":model", $data->model);
             $stmt->bindParam(":license_plate", $data->license_plate);
@@ -95,6 +136,29 @@ class VehicleController {
     private function updateVehicle($id) {
         $this->checkAuth();
         $data = json_decode(file_get_contents("php://input"));
+
+        // Check ownership if driver
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'driver') {
+            $driver_query = "SELECT id FROM drivers WHERE user_id = ?";
+            $driver_stmt = $this->db->prepare($driver_query);
+            $driver_stmt->bindParam(1, $_SESSION['user_id']);
+            $driver_stmt->execute();
+            $driver_row = $driver_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($driver_row) {
+                $check_query = "SELECT driver_id FROM vehicles WHERE id = ?";
+                $check_stmt = $this->db->prepare($check_query);
+                $check_stmt->bindParam(1, $id);
+                $check_stmt->execute();
+                $vehicle_row = $check_stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$vehicle_row || $vehicle_row['driver_id'] != $driver_row['id']) {
+                    http_response_code(403);
+                    echo json_encode(array("message" => "Access Denied. You can only update your own vehicles."));
+                    exit();
+                }
+            }
+        }
 
         if($id && !empty($data->make)) {
             $query = "UPDATE vehicles SET make=:make, model=:model, license_plate=:license_plate, type=:type, capacity=:capacity, status=:status WHERE id=:id";
@@ -129,6 +193,30 @@ class VehicleController {
 
     private function deleteVehicle($id) {
         $this->checkAuth();
+        
+        // Check ownership if driver
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'driver') {
+            $driver_query = "SELECT id FROM drivers WHERE user_id = ?";
+            $driver_stmt = $this->db->prepare($driver_query);
+            $driver_stmt->bindParam(1, $_SESSION['user_id']);
+            $driver_stmt->execute();
+            $driver_row = $driver_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($driver_row) {
+                $check_query = "SELECT driver_id FROM vehicles WHERE id = ?";
+                $check_stmt = $this->db->prepare($check_query);
+                $check_stmt->bindParam(1, $id);
+                $check_stmt->execute();
+                $vehicle_row = $check_stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if (!$vehicle_row || $vehicle_row['driver_id'] != $driver_row['id']) {
+                    http_response_code(403);
+                    echo json_encode(array("message" => "Access Denied. You can only delete your own vehicles."));
+                    exit();
+                }
+            }
+        }
+        
         if($id) {
             $query = "DELETE FROM vehicles WHERE id = ?";
             $stmt = $this->db->prepare($query);
@@ -150,10 +238,16 @@ class VehicleController {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'manager')) {
+        if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'manager' && $_SESSION['role'] !== 'driver')) {
             http_response_code(403);
             echo json_encode(array("message" => "Access Denied."));
             exit();
+        }
+    }
+
+    private function checkSession() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
     }
 

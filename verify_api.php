@@ -59,7 +59,8 @@ if ($res['code'] === 200 && is_array($res['body'])) {
 // 2. Test Registration
 $testUser = 'verify_user_' . rand(1000, 9999);
 $testEmail = $testUser . '@test.com';
-$password = 'password123';
+// Generate a unique, non-hardcoded password for this verification run
+$password = bin2hex(random_bytes(8));
 
 echo "2. Testing Registration ($testUser)... ";
 $res = makeRequest("$baseUrl/auth.php?action=register", 'POST', [

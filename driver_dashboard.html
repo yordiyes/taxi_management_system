@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard - Taxi Service</title>
+    <link rel="stylesheet" href="css/modern.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <ul class="nav-links" id="nav-list">
+                <li><a href="#" class="active" onclick="showSection('cars')">My Cars</a></li>
+                <li><a href="#" onclick="showSection('bookings')">Bookings</a></li>
+                <li><a href="index.html">Tourist View</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Cars Section -->
+        <section id="cars" class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 2rem 0;">
+                <h1>My Vehicles</h1>
+                <button class="btn btn-primary" onclick="openVehicleModal()">+ Add New Vehicle</button>
+            </div>
+            <div id="vehicles-list" class="grid"></div>
+        </section>
+
+        <!-- Bookings Section -->
+        <section id="bookings" class="section hidden">
+            <h1 style="margin: 2rem 0;">Available Bookings</h1>
+            <div id="bookings-list" class="grid"></div>
+        </section>
+    </main>
+
+    <!-- Add Vehicle Modal -->
+    <div id="vehicle-modal" class="glass-card modal-container"
+        style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; display: none; z-index: 1001; box-shadow: 0 0 40px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0;">Add/Edit Vehicle</h3>
+            <button type="button" onclick="closeVehicleModal()" class="modal-close-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+        <form id="vehicle-form" class="mt-8">
+            <input type="hidden" id="vehicle-id">
+            <div class="grid" style="margin: 0;">
+                <div class="form-group">
+                    <label>Make</label>
+                    <input type="text" id="vehicle-make" class="form-control" required placeholder="Toyota">
+                </div>
+                <div class="form-group">
+                    <label>Model</label>
+                    <input type="text" id="vehicle-model" class="form-control" required placeholder="Camry">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>License Plate</label>
+                <input type="text" id="vehicle-license" class="form-control" required placeholder="ABC-1234">
+            </div>
+            <div class="grid" style="margin: 0;">
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="vehicle-type" class="form-control">
+                        <option value="Sedan">Sedan</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Van">Van</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Capacity</label>
+                    <input type="number" id="vehicle-capacity" class="form-control" required>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;">
+                <button type="button" class="btn btn-glass" onclick="closeVehicleModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Vehicle</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Backdrop -->
+    <div id="modal-backdrop" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; z-index: 1000;"></div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Auth Check
+        const user = getUser();
+        if (!user || user.role !== 'driver') {
+            alert('Access Denied. Drivers only.');
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadVehicles();
+            loadBookings();
+        });
+
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+            
+            // Update nav active state
+            document.querySelectorAll('#nav-list a').forEach(a => a.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Reload data when switching sections
+            if (id === 'bookings') {
+                loadBookings();
+            } else if (id === 'cars') {
+                loadVehicles();
+            }
+        }
+
+        // --- Vehicles ---
+        async function loadVehicles() {
+            try {
+                const vehicles = await apiFetch('vehicles.php');
+                const list = document.getElementById('vehicles-list');
+                
+                if (vehicles.length === 0) {
+                    list.innerHTML = '<div class="glass-card"><p class="text-muted">No vehicles added yet. Add your first vehicle to get started!</p></div>';
+                    return;
+                }
+                
+                list.innerHTML = vehicles.map(v => `
+                    <div class="glass-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                            <h3 style="margin-bottom: 0;">${v.make} ${v.model}</h3>
+                            <span style="padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.7rem; background: ${v.status === 'available' ? 'rgba(16, 185, 129, 0.1)' : (v.status === 'booked' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)')}; color: ${v.status === 'available' ? '#10b981' : (v.status === 'booked' ? '#ef4444' : '#f59e0b')}; font-weight: 600;">${v.status.toUpperCase()}</span>
+                        </div>
+                        <p class="text-muted">🚕 ${v.type} • 🔢 ${v.license_plate}</p>
+                        <p class="text-muted" style="margin-top: 0.5rem;">👥 Capacity: ${v.capacity} Seats</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+                            <button class="btn btn-glass" style="flex: 1;" onclick='editVehicle(${JSON.stringify(v)})'>Edit</button>
+                            <button class="btn btn-glass" style="color: #ef4444;" onclick="deleteVehicle(${v.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('vehicles-list').innerHTML = '<div class="glass-card"><p class="text-muted">Error loading vehicles. Please try again.</p></div>';
+            }
+        }
+
+        function openVehicleModal(vehicle = null) {
+            document.getElementById('vehicle-modal').style.display = 'block';
+            document.getElementById('modal-backdrop').style.display = 'block';
+            if (vehicle) {
+                document.getElementById('vehicle-id').value = vehicle.id;
+                document.getElementById('vehicle-make').value = vehicle.make;
+                document.getElementById('vehicle-model').value = vehicle.model;
+                document.getElementById('vehicle-license').value = vehicle.license_plate;
+                document.getElementById('vehicle-type').value = vehicle.type;
+                document.getElementById('vehicle-capacity').value = vehicle.capacity;
+            } else {
+                document.getElementById('vehicle-form').reset();
+                document.getElementById('vehicle-id').value = '';
+            }
+        }
+        function closeVehicleModal() { 
+            document.getElementById('vehicle-modal').style.display = 'none';
+            document.getElementById('modal-backdrop').style.display = 'none';
+        }
+        function editVehicle(v) { openVehicleModal(v); }
+
+        document.getElementById('vehicle-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('vehicle-id').value;
+            const data = {
+                make: document.getElementById('vehicle-make').value,
+                model: document.getElementById('vehicle-model').value,
+                license_plate: document.getElementById('vehicle-license').value,
+                type: document.getElementById('vehicle-type').value,
+                capacity: document.getElementById('vehicle-capacity').value
+            };
+            try {
+                if (id) await apiFetch(`vehicles.php?id=${id}`, 'PUT', data);
+                else await apiFetch('vehicles.php', 'POST', data);
+                closeVehicleModal();
+                loadVehicles();
+            } catch (err) { alert(err.message); }
+        });
+
+        async function deleteVehicle(id) {
+            if (!confirm('Delete this vehicle permanently?')) return;
+            try { 
+                await apiFetch(`vehicles.php?id=${id}`, 'DELETE'); 
+                loadVehicles(); 
+            } catch (err) { alert(err.message); }
+        }
+
+        // --- Bookings ---
+        async function loadBookings() {
+            try {
+                const bookings = await apiFetch('bookings.php');
+                const list = document.getElementById('bookings-list');
+                
+                if (bookings.length === 0) {
+                    list.innerHTML = '<div class="glass-card"><p class="text-muted">No bookings available at the moment.</p></div>';
+                    return;
+                }
+                
+                list.innerHTML = bookings.map(b => {
+                    const statusColor = b.status === 'pending' ? '#f59e0b' : (b.status === 'confirmed' ? '#6366f1' : '#10b981');
+                    const statusBg = b.status === 'pending' ? 'rgba(245, 158, 11, 0.1)' : (b.status === 'confirmed' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(16, 185, 129, 0.1)');
+                    
+                    let actionBtn = '';
+                    if (b.status === 'pending' && !b.driver_id) {
+                        actionBtn = `<button class="btn btn-primary" onclick="confirmBooking(${b.id})" style="width: 100%;">Confirm Booking</button>`;
+                    } else if (b.status === 'confirmed' && b.driver_id) {
+                        actionBtn = `<button class="btn btn-primary" onclick="completeBooking(${b.id})" style="width: 100%; background: #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">Mark as Completed</button>`;
+                    } else if (b.status === 'completed') {
+                        actionBtn = '<button class="btn btn-glass" style="width: 100%; cursor: default;" disabled>Completed</button>';
+                    } else {
+                        actionBtn = '<button class="btn btn-glass" style="width: 100%; cursor: default;" disabled>Assigned to Another Driver</button>';
+                    }
+                    
+                    return `
+                        <div class="glass-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                <h3 style="margin-bottom: 0;">${b.username || 'Guest'}</h3>
+                                <span style="padding: 0.2rem 0.6rem; border-radius: 20px; background: ${statusBg}; color: ${statusColor}; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">${b.status}</span>
+                            </div>
+                            <p class="text-muted">🚖 ${b.service_name || 'Taxi Service'}</p>
+                            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.4rem;">📍 From: ${b.pickup_location}</p>
+                            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">📍 To: ${b.dropoff_location}</p>
+                            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">📅 Pickup: ${new Date(b.pickup_time).toLocaleString()}</p>
+                            ${b.driver_name ? `<p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">👤 Driver: ${b.driver_name}</p>` : ''}
+                            <p class="text-muted" style="font-size: 0.85rem; margin-top: 0.2rem;">📅 Created: ${new Date(b.created_at).toLocaleDateString()}</p>
+                            <div style="margin-top: 1.5rem;">
+                                ${actionBtn}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('bookings-list').innerHTML = '<div class="glass-card"><p class="text-muted">Error loading bookings. Please try again.</p></div>';
+            }
+        }
+
+        async function confirmBooking(id) {
+            if(!confirm('Confirm this booking? You will be assigned as the driver.')) return;
+            try {
+                await apiFetch(`bookings.php?id=${id}`, 'PUT', { status: 'confirmed' });
+                loadBookings();
+                alert('Booking confirmed! You have been assigned as the driver.');
+            } catch(e) { 
+                alert(e.message || 'Failed to confirm booking.');
+            }
+        }
+
+        async function completeBooking(id) {
+            if(!confirm('Mark this booking as completed?')) return;
+            try {
+                await apiFetch(`bookings.php?id=${id}`, 'PUT', { status: 'completed' });
+                loadBookings();
+                alert('Booking marked as completed!');
+            } catch(e) { 
+                alert(e.message || 'Failed to complete booking.');
+            }
+        }
+
+        // Close modal when clicking on backdrop
+        document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal-backdrop')) {
+                closeVehicleModal();
+            }
+        });
+        
+        // Prevent modal from closing when clicking inside it
+        document.querySelectorAll('.modal-container').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        });
+    </script>
+</body>
+
+</html>
+

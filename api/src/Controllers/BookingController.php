@@ -70,6 +70,31 @@ class BookingController {
             $filter_user_id = $u_row ? $u_row['id'] : -1;
         }
 
+        // If driver, show bookings they can take or have taken
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'driver') {
+            $driver_query = "SELECT id FROM drivers WHERE user_id = ?";
+            $driver_stmt = $this->db->prepare($driver_query);
+            $driver_stmt->bindParam(1, $_SESSION['user_id']);
+            $driver_stmt->execute();
+            $driver_row = $driver_stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($driver_row) {
+                $query = "SELECT b.*, u.username, s.name as service_name, d.name as driver_name 
+                          FROM bookings b 
+                          LEFT JOIN users u ON b.user_id = u.id 
+                          LEFT JOIN services s ON b.service_id = s.id
+                          LEFT JOIN drivers d ON b.driver_id = d.id
+                          WHERE b.driver_id = :driver_id OR (b.driver_id IS NULL AND b.status = 'pending')
+                          ORDER BY b.created_at DESC";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(":driver_id", $driver_row['id']);
+                $stmt->execute();
+                $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode($bookings);
+                return;
+            }
+        }
+        
         if ($filter_user_id !== null) {
             $query = "SELECT b.*, s.name as service_name, d.name as driver_name, u.username 
                       FROM bookings b 
@@ -181,20 +206,92 @@ class BookingController {
         $this->checkSession();
         $data = json_decode(file_get_contents("php://input"));
 
-        // Protected: Only Admin/Manager
-        if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'manager')) {
+        // Protected: Admin/Manager/Driver
+        if (!isset($_SESSION['role']) || ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'manager' && $_SESSION['role'] !== 'driver')) {
             http_response_code(403);
             echo json_encode(array("message" => "Access Denied."));
             exit();
         }
 
         if($id && !empty($data->status)) {
-            $query = "UPDATE bookings SET status=:status WHERE id=:id";
+            // If driver is confirming, assign themselves and their vehicle
+            $driver_id = null;
+            $vehicle_id = null;
+            
+            if (isset($_SESSION['role']) && $_SESSION['role'] === 'driver' && $data->status === 'confirmed') {
+                // Get driver record
+                $driver_query = "SELECT id, vehicle_id FROM drivers WHERE user_id = ?";
+                $driver_stmt = $this->db->prepare($driver_query);
+                $driver_stmt->bindParam(1, $_SESSION['user_id']);
+                $driver_stmt->execute();
+                $driver_row = $driver_stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($driver_row) {
+                    $driver_id = $driver_row['id'];
+                    $vehicle_id = $driver_row['vehicle_id'];
+                    
+                    // Update vehicle status to booked
+                    if ($vehicle_id) {
+                        $vehicle_update = "UPDATE vehicles SET status = 'booked' WHERE id = ?";
+                        $vehicle_stmt = $this->db->prepare($vehicle_update);
+                        $vehicle_stmt->bindParam(1, $vehicle_id);
+                        $vehicle_stmt->execute();
+                    }
+                    
+                    // Update driver status
+                    $driver_status_update = "UPDATE drivers SET status = 'on_trip' WHERE id = ?";
+                    $driver_status_stmt = $this->db->prepare($driver_status_update);
+                    $driver_status_stmt->bindParam(1, $driver_id);
+                    $driver_status_stmt->execute();
+                } else {
+                    http_response_code(403);
+                    echo json_encode(array("message" => "Driver profile not found."));
+                    exit();
+                }
+            }
+            
+            // If completing, free up vehicle and driver
+            if (isset($data->status) && $data->status === 'completed') {
+                // Get booking to find driver
+                $booking_query = "SELECT driver_id FROM bookings WHERE id = ?";
+                $booking_stmt = $this->db->prepare($booking_query);
+                $booking_stmt->bindParam(1, $id);
+                $booking_stmt->execute();
+                $booking_row = $booking_stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($booking_row && $booking_row['driver_id']) {
+                    // Get vehicle_id from driver
+                    $driver_vehicle_query = "SELECT vehicle_id FROM drivers WHERE id = ?";
+                    $driver_vehicle_stmt = $this->db->prepare($driver_vehicle_query);
+                    $driver_vehicle_stmt->bindParam(1, $booking_row['driver_id']);
+                    $driver_vehicle_stmt->execute();
+                    $driver_vehicle_row = $driver_vehicle_stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if ($driver_vehicle_row && $driver_vehicle_row['vehicle_id']) {
+                        // Free vehicle
+                        $vehicle_free = "UPDATE vehicles SET status = 'available' WHERE id = ?";
+                        $vehicle_free_stmt = $this->db->prepare($vehicle_free);
+                        $vehicle_free_stmt->bindParam(1, $driver_vehicle_row['vehicle_id']);
+                        $vehicle_free_stmt->execute();
+                    }
+                    
+                    // Free driver
+                    $driver_free = "UPDATE drivers SET status = 'available' WHERE id = ?";
+                    $driver_free_stmt = $this->db->prepare($driver_free);
+                    $driver_free_stmt->bindParam(1, $booking_row['driver_id']);
+                    $driver_free_stmt->execute();
+                }
+            }
+
+            $query = "UPDATE bookings SET status=:status" . ($driver_id ? ", driver_id=:driver_id" : "") . " WHERE id=:id";
             $stmt = $this->db->prepare($query);
 
             $data->status = htmlspecialchars(strip_tags($data->status));
 
             $stmt->bindParam(":status", $data->status);
+            if ($driver_id) {
+                $stmt->bindParam(":driver_id", $driver_id);
+            }
             $stmt->bindParam(":id", $id);
 
             if($stmt->execute()) {
