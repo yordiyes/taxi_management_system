@@ -65,6 +65,9 @@ async function loadHotels() {
   try {
     const res = await fetchHotelApi("/hotels.php");
 
+    // Debug: log the response to see what we're getting
+    console.log('Hotel API Response:', res);
+
     if (res.status === "success" && res.data) {
       // Handle both array directly or nested under hotels
       const hotels = res.data.hotels || res.data;
@@ -86,7 +89,7 @@ async function loadHotels() {
             hotel.name
           }" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'">
             <div class="card-badge">
-              <span>${hotel.stars || 'N/A'} ★</span>
+              <span>${hotel.star_rating || hotel.stars || 'N/A'} ★</span>
             </div>
           </div>
           <div class="card-content">
@@ -181,16 +184,16 @@ async function loadHotelRooms(hotelId, hotelName) {
                 room.max_occupancy
               } Guests</span>
               ${
-                room.is_available
+                (room.status === 'available' || room.is_available === true)
                   ? '<span class="feature-item" style="color: var(--success);">✓ Available</span>'
                   : '<span class="feature-item" style="color: var(--error);">✗ Unavailable</span>'
               }
             </div>
             <button onclick="openHotelBookingForm(${hotelId}, ${room.id}, '${
-            String(room.room_type_name).replace(/'/g, "\\'")
-          }', ${room.base_price})" 
+            String(room.room_type_name || 'Room').replace(/'/g, "\\'")
+          }', ${room.base_price || 0})" 
                     class="btn btn-primary full-width" 
-                    ${!room.is_available ? "disabled" : ""}>
+                    ${(room.status !== 'available' && room.is_available !== true) ? "disabled" : ""}>
               Book Now
             </button>
           </div>
@@ -308,12 +311,23 @@ async function handleHotelBooking(e) {
     const messageDiv = document.getElementById("hotel-booking-message");
     if (messageDiv) {
       messageDiv.style.display = "block";
-      if (res.status === "success") {
+      
+      // Handle different response formats
+      const isSuccess = res.status === "success" || 
+                       (res.data && (res.data.id || res.data.booking_id || res.data.confirmation)) ||
+                       (res.confirmation || res.booking_id);
+      
+      if (isSuccess) {
+        const bookingId = res.data?.id || res.data?.booking_id || res.data?.confirmation || 
+                         res.confirmation || res.booking_id || res.id || 'N/A';
+        const totalPrice = res.data?.total_price || res.data?.price || res.total_price || 
+                          res.data?.amount || 'N/A';
+        
         messageDiv.innerHTML = `
           <div class="alert alert-success">
             <strong>Booking Confirmed!</strong><br>
-            Booking ID: ${res.data.id}<br>
-            Total Price: $${res.data.total_price}
+            Booking ID: ${bookingId}<br>
+            ${totalPrice !== 'N/A' ? `Total Price: $${totalPrice}` : ''}
           </div>
         `;
         document.getElementById("hotel-booking-form").reset();
@@ -323,17 +337,33 @@ async function handleHotelBooking(e) {
           loadHotels();
         }, 3000);
       } else {
+        // Extract error message from different possible locations
+        const errorMsg = res.message || 
+                        res.error?.message || 
+                        res.details?.error?.message ||
+                        res.error ||
+                        "Booking failed. Please try again.";
+        
         messageDiv.innerHTML = `
           <div class="alert alert-error">
             <strong>Booking Failed</strong><br>
-            ${res.message}
+            ${errorMsg}
           </div>
         `;
       }
     }
   } catch (error) {
     console.error("Booking error:", error);
-    alert("An error occurred while processing your booking.");
+    const messageDiv = document.getElementById("hotel-booking-message");
+    if (messageDiv) {
+      messageDiv.style.display = "block";
+      messageDiv.innerHTML = `
+        <div class="alert alert-error">
+          <strong>Booking Failed</strong><br>
+          ${error.message || "An error occurred while processing your booking. Please try again."}
+        </div>
+      `;
+    }
   } finally {
     btn.innerHTML = originalText;
     btn.disabled = false;

@@ -56,17 +56,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response = ExternalService::requestJson($url, 'POST', $payload, $hotelHeaders);
 
     if ($response['ok']) {
+        $data = $response['data'];
+        
+        // Handle different response formats from external API
+        // The external API might return data directly or nested
+        $bookingData = $data['data'] ?? $data;
+        
+        // Ensure consistent response format
         echo json_encode([
             'status' => 'success',
             'message' => 'Hotel booking confirmed',
-            'data' => $response['data']['data'] ?? $response['data']
+            'data' => $bookingData
         ]);
     } else {
         http_response_code($response['status'] ?: 500);
+        $errorData = $response['data'] ?? null;
+        $errorMessage = $response['error'] ?? 'External service error';
+        
+        // Extract error message from nested error structure if present
+        if (is_array($errorData) && isset($errorData['error']['message'])) {
+            $errorMessage = $errorData['error']['message'];
+        } else if (is_array($errorData) && isset($errorData['message'])) {
+            $errorMessage = $errorData['message'];
+        }
+        
         echo json_encode([
             'status' => 'error',
-            'message' => $response['error'] ?: 'External service error',
-            'details' => $response['data']
+            'message' => $errorMessage,
+            'details' => $errorData
         ]);
     }
     exit;
