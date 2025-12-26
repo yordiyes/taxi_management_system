@@ -5,22 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Global Tourism Hub - Tourist Services</title>
     <link rel="stylesheet" href="css/modern.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <header>
       <nav>
         <a href="#" class="logo" onclick="showSection('home')">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2L2 7L12 12L22 7L12 2Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 17L12 22L22 17"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 12L12 17L22 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </a>
         <ul class="nav-links" id="nav-list">
-          <li><a href="#" class="active" onclick="showSection('home')">Home</a></li>
+          <li>
+            <a href="#" class="active" onclick="showSection('home')">Home</a>
+          </li>
           <li id="auth-link"><a href="login.html">Login</a></li>
         </ul>
       </nav>
@@ -32,12 +61,28 @@
         <div class="hero-content">
           <!-- <span class="hero-badge">Welcome to Global Tourism</span> -->
           <h1>Your Journey <span class="gradient-text">Starts Here</span></h1>
-          <p>Experience seamless travel planning with premium accommodations, curated tours, exquisite dining, and reliable transportation—all in one place.</p>
+          <p>
+            Experience seamless travel planning with premium accommodations,
+            curated tours, exquisite dining, and reliable transportation—all in
+            one place.
+          </p>
           <div class="cta-group">
             <button onclick="showSection('services')" class="btn btn-primary">
               <span>Explore Services</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M7.5 15L12.5 10L7.5 5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </button>
             <a href="#services" class="btn btn-secondary">View All</a>
@@ -63,35 +108,98 @@
       <section id="services" class="section hidden">
         <div class="tabs">
           <button class="tab-btn active" onclick="switchTab('browse')">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 2L3 7V17H8V12H12V17H17V7L10 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 2L3 7V17H8V12H12V17H17V7L10 2Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             <span>Browse Places</span>
           </button>
           <button class="tab-btn" onclick="switchTab('tickets')">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 6H18M2 10H18M2 14H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M4 2V4M16 2V4M4 18V16M16 18V16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 6H18M2 10H18M2 14H18"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+              <path
+                d="M4 2V4M16 2V4M4 18V16M16 18V16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
             </svg>
             <span>Tours</span>
           </button>
           <button class="tab-btn" onclick="switchTab('hotel')">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 10L10 3L17 10V17H13V12H7V17H3V10Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 10L10 3L17 10V17H13V12H7V17H3V10Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             <span>Hotels</span>
           </button>
           <button class="tab-btn" onclick="switchTab('restaurant')">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 2V18M6 6H14M6 10H14M6 14H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 2V18M6 6H14M6 10H14M6 14H14"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
             </svg>
             <span>Restaurants</span>
           </button>
           <button class="tab-btn" onclick="switchTab('taxi')">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 10H17M5 6L3 10V14H5M15 6L17 10V14H15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="7" cy="14" r="1.5" fill="currentColor"/>
-              <circle cx="13" cy="14" r="1.5" fill="currentColor"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 10H17M5 6L3 10V14H5M15 6L17 10V14H15"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="7" cy="14" r="1.5" fill="currentColor" />
+              <circle cx="13" cy="14" r="1.5" fill="currentColor" />
             </svg>
             <span>Taxis</span>
           </button>
@@ -100,7 +208,12 @@
         <!-- Browse Places -->
         <div id="tab-browse" class="tab-content transition-fade">
           <h2 class="section-title">Discover Amazing Places</h2>
-          <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Explore curated destinations handpicked by travel experts</p>
+          <p
+            class="text-muted text-center"
+            style="max-width: 600px; margin: 0 auto 2.5rem"
+          >
+            Explore curated destinations handpicked by travel experts
+          </p>
           <div id="places-list" class="grid">
             <p class="text-muted">Loading places...</p>
           </div>
@@ -110,42 +223,130 @@
         <div id="tab-tickets" class="tab-content hidden transition-fade">
           <div class="glass-card">
             <h2 class="section-title">Curated Travel Experiences</h2>
-            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Discover unforgettable adventures guided by local experts</p>
+            <p
+              class="text-muted text-center"
+              style="max-width: 600px; margin: 0 auto 2.5rem"
+            >
+              Discover unforgettable adventures guided by local experts
+            </p>
 
-            <div class="search-box glass-card" style="padding: 1rem; display: flex; gap: 1rem; margin-bottom: 2rem;">
-              <input type="text" id="tour-search" class="form-control" placeholder="Search destinations..." style="flex: 1;">
-              <button onclick="loadTours()" class="btn btn-primary">Search</button>
+            <div
+              class="search-box glass-card"
+              style="
+                padding: 1rem;
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 2rem;
+              "
+            >
+              <input
+                type="text"
+                id="tour-search"
+                class="form-control"
+                placeholder="Search destinations..."
+                style="flex: 1"
+              />
+              <button onclick="loadTours()" class="btn btn-primary">
+                Search
+              </button>
             </div>
 
             <!-- Booking Success/Error Message -->
-            <div id="tour-booking-message" style="display: none; margin-bottom: 2rem; position: relative; z-index: 10;"></div>
+            <div
+              id="tour-booking-message"
+              style="
+                display: none;
+                margin-bottom: 2rem;
+                position: relative;
+                z-index: 10;
+              "
+            ></div>
 
             <!-- Tour Booking Form -->
-            <div id="tour-booking-form-container" class="glass-card" style="display: none; background: rgba(99, 102, 241, 0.1); border-color: var(--primary); margin-bottom: 2rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="margin: 0; color: var(--primary);">Book Your Tour</h3>
-                <button onclick="closeTourBookingForm()" style="background: none; border: none; color: currentColor; cursor: pointer; font-size: 1.5rem; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">&times;</button>
+            <div
+              id="tour-booking-form-container"
+              class="glass-card"
+              style="
+                display: none;
+                background: rgba(99, 102, 241, 0.1);
+                border-color: var(--primary);
+                margin-bottom: 2rem;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1.5rem;
+                "
+              >
+                <h3 style="margin: 0; color: var(--primary)">Book Your Tour</h3>
+                <button
+                  onclick="closeTourBookingForm()"
+                  style="
+                    background: none;
+                    border: none;
+                    color: currentColor;
+                    cursor: pointer;
+                    font-size: 1.5rem;
+                    padding: 0;
+                    width: 2rem;
+                    height: 2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  &times;
+                </button>
               </div>
-              
-              <div id="selected-tour-display" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md);">
+
+              <div
+                id="selected-tour-display"
+                style="
+                  margin-bottom: 1.5rem;
+                  padding: 1rem;
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: var(--radius-md);
+                "
+              >
                 <!-- Filled by JS -->
               </div>
 
               <form id="tour-booking-form">
-                <input type="hidden" id="tour-id-input">
-                
-                <div class="grid" style="margin-top: 0;">
+                <input type="hidden" id="tour-id-input" />
+
+                <div class="grid" style="margin-top: 0">
                   <div class="form-group">
                     <label>Your Name</label>
-                    <input type="text" id="tour-name" class="form-control" placeholder="Enter your full name" required>
+                    <input
+                      type="text"
+                      id="tour-name"
+                      class="form-control"
+                      placeholder="Enter your full name"
+                      required
+                    />
                   </div>
                   <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" id="tour-email" class="form-control" placeholder="your.email@example.com" required>
+                    <input
+                      type="email"
+                      id="tour-email"
+                      class="form-control"
+                      placeholder="your.email@example.com"
+                      required
+                    />
                   </div>
                 </div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1.2rem;">Confirm Booking</button>
+
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="width: 100%; margin-top: 1rem; padding: 1.2rem"
+                >
+                  Confirm Booking
+                </button>
               </form>
             </div>
 
@@ -159,9 +360,163 @@
         <div id="tab-hotel" class="tab-content hidden transition-fade">
           <div class="glass-card">
             <h2 class="section-title">Premium Stays</h2>
-            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Luxury accommodations tailored to your comfort and style</p>
+            <p
+              class="text-muted text-center"
+              style="max-width: 600px; margin: 0 auto 2.5rem"
+            >
+              Luxury accommodations tailored to your comfort and style
+            </p>
+
+            <!-- Booking Success/Error Message -->
+            <div
+              id="hotel-booking-message"
+              style="
+                display: none;
+                margin-bottom: 2rem;
+                position: relative;
+                z-index: 10;
+              "
+            ></div>
+
+            <!-- Hotel Booking Form -->
+            <div
+              id="hotel-booking-form-container"
+              class="glass-card"
+              style="
+                display: none;
+                background: rgba(99, 102, 241, 0.1);
+                border-color: var(--primary);
+                margin-bottom: 2rem;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1.5rem;
+                "
+              >
+                <h3 style="margin: 0; color: var(--primary)">Book Your Stay</h3>
+                <button
+                  onclick="closeHotelBookingForm()"
+                  style="
+                    background: none;
+                    border: none;
+                    color: currentColor;
+                    cursor: pointer;
+                    font-size: 1.5rem;
+                    padding: 0;
+                    width: 2rem;
+                    height: 2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  &times;
+                </button>
+              </div>
+
+              <div
+                id="selected-hotel-display"
+                style="
+                  margin-bottom: 1.5rem;
+                  padding: 1rem;
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: var(--radius-md);
+                "
+              >
+                <!-- Filled by JS -->
+              </div>
+
+              <form id="hotel-booking-form">
+                <input type="hidden" id="hotel-id-input" />
+                <input type="hidden" id="room-id-input" />
+
+                <div class="grid" style="margin-top: 0">
+                  <div class="form-group">
+                    <label>Guest Name</label>
+                    <input
+                      type="text"
+                      id="hotel-guest-name"
+                      class="form-control"
+                      placeholder="Enter full name"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Email Address</label>
+                    <input
+                      type="email"
+                      id="hotel-guest-email"
+                      class="form-control"
+                      placeholder="your.email@example.com"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Phone Number</label>
+                    <input
+                      type="tel"
+                      id="hotel-guest-phone"
+                      class="form-control"
+                      placeholder="+1234567890"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Number of Guests</label>
+                    <input
+                      type="number"
+                      id="hotel-guests"
+                      class="form-control"
+                      value="1"
+                      min="1"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Check-in Date</label>
+                    <input
+                      type="date"
+                      id="hotel-check-in"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Check-out Date</label>
+                    <input
+                      type="date"
+                      id="hotel-check-out"
+                      class="form-control"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Special Requests (Optional)</label>
+                  <textarea
+                    id="hotel-special-requests"
+                    class="form-control"
+                    placeholder="Late check-in, extra pillows, etc."
+                    rows="3"
+                  ></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="width: 100%; margin-top: 1rem; padding: 1.2rem"
+                >
+                  Confirm Booking
+                </button>
+              </form>
+            </div>
+
             <div id="hotel-list" class="grid">
-              <p class="text-muted">Loading available rooms...</p>
+              <p class="text-muted">Loading available hotels...</p>
             </div>
           </div>
         </div>
@@ -170,41 +525,119 @@
         <div id="tab-restaurant" class="tab-content hidden transition-fade">
           <div class="glass-card">
             <h2 class="section-title">Culinary Excellence</h2>
-            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Reserve your table at the finest restaurants in town</p>
-            
+            <p
+              class="text-muted text-center"
+              style="max-width: 600px; margin: 0 auto 2.5rem"
+            >
+              Reserve your table at the finest restaurants in town
+            </p>
+
             <!-- Booking Success/Error Message -->
-            <div id="restaurant-booking-message" style="display: none; margin-bottom: 2rem; position: relative; z-index: 10;"></div>
+            <div
+              id="restaurant-booking-message"
+              style="
+                display: none;
+                margin-bottom: 2rem;
+                position: relative;
+                z-index: 10;
+              "
+            ></div>
 
             <!-- Restaurant Booking Form -->
-            <div id="restaurant-booking-form-container" class="glass-card" style="display: none; background: rgba(99, 102, 241, 0.1); border-color: var(--primary); margin-bottom: 2rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h3 style="margin: 0; color: var(--primary);">Book Your Table</h3>
-                <button onclick="closeRestaurantBookingForm()" style="background: none; border: none; color: currentColor; cursor: pointer; font-size: 1.5rem; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">&times;</button>
+            <div
+              id="restaurant-booking-form-container"
+              class="glass-card"
+              style="
+                display: none;
+                background: rgba(99, 102, 241, 0.1);
+                border-color: var(--primary);
+                margin-bottom: 2rem;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 1.5rem;
+                "
+              >
+                <h3 style="margin: 0; color: var(--primary)">
+                  Book Your Table
+                </h3>
+                <button
+                  onclick="closeRestaurantBookingForm()"
+                  style="
+                    background: none;
+                    border: none;
+                    color: currentColor;
+                    cursor: pointer;
+                    font-size: 1.5rem;
+                    padding: 0;
+                    width: 2rem;
+                    height: 2rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  &times;
+                </button>
               </div>
-              
-              <div id="selected-restaurant-display" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md);">
+
+              <div
+                id="selected-restaurant-display"
+                style="
+                  margin-bottom: 1.5rem;
+                  padding: 1rem;
+                  background: rgba(255, 255, 255, 0.1);
+                  border-radius: var(--radius-md);
+                "
+              >
                 <!-- Filled by JS -->
               </div>
 
               <form id="restaurant-booking-form">
-                <input type="hidden" id="restaurant-id-input">
-                
-                <div class="grid" style="margin-top: 0;">
+                <input type="hidden" id="restaurant-id-input" />
+
+                <div class="grid" style="margin-top: 0">
                   <div class="form-group">
                     <label>Your Name</label>
-                    <input type="text" id="restaurant-name" class="form-control" placeholder="Enter your full name" required>
+                    <input
+                      type="text"
+                      id="restaurant-name"
+                      class="form-control"
+                      placeholder="Enter your full name"
+                      required
+                    />
                   </div>
                   <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email" id="restaurant-email" class="form-control" placeholder="your.email@example.com" required>
+                    <input
+                      type="email"
+                      id="restaurant-email"
+                      class="form-control"
+                      placeholder="your.email@example.com"
+                      required
+                    />
                   </div>
                   <div class="form-group">
                     <label>Phone Number (Optional)</label>
-                    <input type="tel" id="restaurant-phone" class="form-control" placeholder="+251911234567">
+                    <input
+                      type="tel"
+                      id="restaurant-phone"
+                      class="form-control"
+                      placeholder="+251911234567"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Date</label>
-                    <input type="date" id="restaurant-date" class="form-control" required>
+                    <input
+                      type="date"
+                      id="restaurant-date"
+                      class="form-control"
+                      required
+                    />
                   </div>
                   <div class="form-group">
                     <label>Time</label>
@@ -214,19 +647,41 @@
                   </div>
                   <div class="form-group">
                     <label>Number of Guests</label>
-                    <input type="number" id="restaurant-guests" class="form-control" placeholder="2" min="1" max="20" required>
+                    <input
+                      type="number"
+                      id="restaurant-guests"
+                      class="form-control"
+                      placeholder="2"
+                      min="1"
+                      max="20"
+                      required
+                    />
                   </div>
                 </div>
-                
+
                 <div class="form-group">
                   <label>Special Requests (Optional)</label>
-                  <textarea id="restaurant-special-requests" class="form-control" placeholder="Window seat preferred, dietary restrictions, etc." rows="3"></textarea>
+                  <textarea
+                    id="restaurant-special-requests"
+                    class="form-control"
+                    placeholder="Window seat preferred, dietary restrictions, etc."
+                    rows="3"
+                  ></textarea>
                 </div>
-                
+
                 <!-- Availability Check Message -->
-                <div id="restaurant-availability-message" style="display: none; margin-top: 1rem;"></div>
-                
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1.2rem;">Confirm Reservation</button>
+                <div
+                  id="restaurant-availability-message"
+                  style="display: none; margin-top: 1rem"
+                ></div>
+
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  style="width: 100%; margin-top: 1rem; padding: 1.2rem"
+                >
+                  Confirm Reservation
+                </button>
               </form>
             </div>
 
@@ -238,37 +693,76 @@
 
         <!-- Taxis -->
         <div id="tab-taxi" class="tab-content hidden transition-fade">
-          <div class="glass-card" style="margin-bottom: 3rem;">
+          <div class="glass-card" style="margin-bottom: 3rem">
             <h2 class="section-title">Reliable Transportation</h2>
-            <p class="text-muted text-center" style="max-width: 600px; margin: 0 auto 2.5rem;">Professional drivers and premium vehicles for your journey</p>
-            
+            <p
+              class="text-muted text-center"
+              style="max-width: 600px; margin: 0 auto 2.5rem"
+            >
+              Professional drivers and premium vehicles for your journey
+            </p>
+
             <form id="taxi-booking-form" class="mt-8">
-              <input type="hidden" id="service-id-input">
-              
-              <div id="selected-service-display" class="glass-card" style="display: none; background: rgba(99, 102, 241, 0.1); border-color: var(--primary); margin-bottom: 2rem;">
+              <input type="hidden" id="service-id-input" />
+
+              <div
+                id="selected-service-display"
+                class="glass-card"
+                style="
+                  display: none;
+                  background: rgba(99, 102, 241, 0.1);
+                  border-color: var(--primary);
+                  margin-bottom: 2rem;
+                "
+              >
                 <!-- Filled by JS -->
               </div>
 
-              <div class="grid" style="margin-top: 0;">
+              <div class="grid" style="margin-top: 0">
                 <div class="form-group">
                   <label>Pickup Point</label>
-                  <input type="text" id="pickup" class="form-control" placeholder="Enter pickup address" required>
+                  <input
+                    type="text"
+                    id="pickup"
+                    class="form-control"
+                    placeholder="Enter pickup address"
+                    required
+                  />
                 </div>
                 <div class="form-group">
                   <label>Destination</label>
-                  <input type="text" id="dropoff" class="form-control" placeholder="Enter dropoff location" required>
+                  <input
+                    type="text"
+                    id="dropoff"
+                    class="form-control"
+                    placeholder="Enter dropoff location"
+                    required
+                  />
                 </div>
                 <div class="form-group">
                   <label>Schedule Time</label>
-                  <input type="datetime-local" id="time" class="form-control" required>
+                  <input
+                    type="datetime-local"
+                    id="time"
+                    class="form-control"
+                    required
+                  />
                 </div>
               </div>
-              
-              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1.2rem;">Confirm Booking</button>
+
+              <button
+                type="submit"
+                class="btn btn-primary"
+                style="width: 100%; margin-top: 1rem; padding: 1.2rem"
+              >
+                Confirm Booking
+              </button>
             </form>
           </div>
 
-          <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Available Fleet</h3>
+          <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem">
+            Available Fleet
+          </h3>
           <div id="taxi-list" class="grid">
             <!-- Loaded via JS -->
           </div>
@@ -279,6 +773,7 @@
     <script src="js/app.js"></script>
     <script src="js/tour-api.js"></script>
     <script src="js/restaurant-api.js"></script>
+    <script src="js/hotel-api.js"></script>
     <script>
       // Tab switching logic
       async function switchTab(tabName) {
@@ -307,52 +802,6 @@
           .querySelectorAll(".section")
           .forEach((el) => el.classList.add("hidden"));
         document.getElementById(sectionId).classList.remove("hidden");
-      }
-
-      // --- EXTERNAL INTEGRATION EXAMPLE (HOTELS) ---
-      async function loadHotels() {
-        const list = document.getElementById("hotel-list");
-        list.innerHTML = "<p>Loading hotels from Group 2...</p>";
-
-        try {
-          // TODO: Replace this URL with the actual API from Group 2
-          // const res = await fetch('http://localhost/hotel_management/api/rooms.php');
-          // const hotels = await res.json();
-
-          // MOCK DATA (Simulating what their API would return)
-          const hotels = [
-            { name: "Grand Luxury Hotel (From API)", rating: 5, price: 250 },
-            { name: "Cozy Inn (From API)", rating: 3, price: 80 },
-            { name: "Business Suites (From API)", rating: 4, price: 150 },
-          ];
-
-          // Simulate network delay
-          await new Promise((r) => setTimeout(r, 500));
-
-          if (hotels.length === 0) {
-            list.innerHTML = "<p>No hotels found.</p>";
-            return;
-          }
-
-          list.innerHTML = hotels
-            .map(
-              (h) => `
-                  <div class="glass-card">
-                      <h3 style="margin-bottom: 0.5rem;">${h.name}</h3>
-                      <p class="text-muted">${"⭐".repeat(h.rating)} • Luxury Stay</p>
-                      <p style="margin-top: 1rem; font-weight: 700; font-size: 1.25rem;">$${h.price}/night</p>
-                      <div style="margin-top: 1.5rem;">
-                        <button class="btn btn-glass" style="width: 100%" onclick="alert('Reserve Now to Group 2 API')">Reserve Now</button>
-                      </div>
-                  </div>
-              `
-            )
-            .join("");
-        } catch (e) {
-          console.error(e);
-          list.innerHTML =
-            '<p style="color:red">Error loading hotels from external service.</p>';
-        }
       }
 
       // Load Taxis
