@@ -117,6 +117,38 @@
               <button onclick="loadTours()" class="btn btn-primary">Search</button>
             </div>
 
+            <!-- Booking Success/Error Message -->
+            <div id="tour-booking-message" style="display: none; margin-bottom: 2rem; position: relative; z-index: 10;"></div>
+
+            <!-- Tour Booking Form -->
+            <div id="tour-booking-form-container" class="glass-card" style="display: none; background: rgba(99, 102, 241, 0.1); border-color: var(--primary); margin-bottom: 2rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: var(--primary);">Book Your Tour</h3>
+                <button onclick="closeTourBookingForm()" style="background: none; border: none; color: currentColor; cursor: pointer; font-size: 1.5rem; padding: 0; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center;">&times;</button>
+              </div>
+              
+              <div id="selected-tour-display" style="margin-bottom: 1.5rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-md);">
+                <!-- Filled by JS -->
+              </div>
+
+              <form id="tour-booking-form">
+                <input type="hidden" id="tour-id-input">
+                
+                <div class="grid" style="margin-top: 0;">
+                  <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="tour-name" class="form-control" placeholder="Enter your full name" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="tour-email" class="form-control" placeholder="your.email@example.com" required>
+                  </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1.2rem;">Confirm Booking</button>
+              </form>
+            </div>
+
             <div id="tours-list" class="grid">
               <p class="text-muted">Enter a destination to search...</p>
             </div>
@@ -206,6 +238,7 @@
     </main>
 
     <script src="js/app.js"></script>
+    <script src="js/tour-api.js"></script>
     <script>
       // Tab switching logic
       async function switchTab(tabName) {
@@ -226,114 +259,6 @@
         else if (tabName === "hotel") loadHotels(); // FETCH FROM GROUP 2
         else if (tabName === "browse") loadPlaces();
         else if (tabName === "tickets") loadTours();
-      }
-
-      // --- TOUR MANAGEMENT INTEGRATION ---
-      const TOUR_API_BASE = "https://tour-management-web.onrender.com/api/v1/";
-      const TOUR_API_KEY = "demo-api-key";
-
-      async function fetchTourApi(
-        endpoint,
-        method = "GET",
-        body = null,
-        queryParams = {}
-      ) {
-        let url = new URL(TOUR_API_BASE + endpoint);
-        Object.keys(queryParams).forEach((key) => {
-          if (queryParams[key]) url.searchParams.append(key, queryParams[key]);
-        });
-
-        const options = {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": TOUR_API_KEY,
-          },
-        };
-        if (body) options.body = JSON.stringify(body);
-
-        const res = await fetch(url, options);
-        return await res.json();
-      }
-
-      async function loadPlaces() {
-        const list = document.getElementById("places-list");
-        list.innerHTML = "<p>Loading places...</p>";
-        try {
-          const res = await fetchTourApi("places.php");
-          if (!res.data || res.data.length === 0) {
-            list.innerHTML = "<p>No places found.</p>";
-            return;
-          }
-          list.innerHTML = res.data
-            .map(
-              (p) => `
-                  <div class="glass-card">
-                      <img src="https://via.placeholder.com/400x200/6366f1/ffffff?text=${encodeURIComponent(
-                        p.name
-                      )}" style="width: 100%; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-                      <h3 style="margin-bottom: 0.5rem;">${p.name}</h3>
-                      <p class="text-muted">📍 ${p.type || "Destination"}</p>
-                      <div style="margin-top: 1.5rem;">
-                        <button class="btn btn-glass" style="width: 100%" onclick="alert('View details for ${p.name}')">View Details</button>
-                      </div>
-                  </div>
-              `
-            )
-            .join("");
-        } catch (e) {
-          console.error(e);
-          list.innerHTML = '<p style="color:red">Error loading places.</p>';
-        }
-      }
-
-      async function loadTours() {
-        const list = document.getElementById("tours-list");
-        const q = document.getElementById("tour-search").value;
-        list.innerHTML = "<p>Loading tours...</p>";
-        try {
-          const res = await fetchTourApi("tours.php", "GET", null, { q });
-          if (!res.data || res.data.length === 0) {
-            list.innerHTML = "<p>No tours found.</p>";
-            return;
-          }
-          list.innerHTML = res.data
-            .map(
-              (t) => `
-                  <div class="glass-card">
-                      <h3 style="margin-bottom: 0.5rem;">${t.title}</h3>
-                      <p class="text-muted">📍 ${t.location} • 📅 ${t.schedule_date}</p>
-                      <p style="margin-top: 1rem; font-weight: 700; font-size: 1.25rem;">$${t.price}</p>
-                      <div style="margin-top: 1.5rem;">
-                        <button class="btn btn-glass" style="width: 100%" onclick="bookTourPrompt(${t.id}, '${t.title}')">Book Now</button>
-                      </div>
-                  </div>
-              `
-            )
-            .join("");
-        } catch (e) {
-          console.error(e);
-          list.innerHTML = '<p style="color:red">Error loading tours.</p>';
-        }
-      }
-
-      async function bookTourPrompt(tourId, tourTitle) {
-        const email = prompt(
-          `Enter your email to book "${tourTitle}":`,
-          "guest@example.com"
-        );
-        if (!email) return;
-
-        try {
-          const res = await fetchTourApi("tours.php", "POST", {
-            tour_id: tourId,
-            email: email,
-            name: "Guest User",
-          });
-          alert("Booking Response: " + JSON.stringify(res));
-        } catch (e) {
-          alert("Booking failed: " + e.message);
-        }
       }
 
       function showSection(sectionId) {

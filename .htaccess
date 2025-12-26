@@ -1,11 +1,25 @@
-# Handle CORS for API
+# Handle CORS for API - ALLOW EVERYTHING
 <IfModule mod_headers.c>
+    # Allow all origins
     Header always set Access-Control-Allow-Origin "*"
-    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header always set Access-Control-Allow-Headers "Content-Type, X-API-KEY, Authorization, X-Requested-With"
+    
+    # Allow all methods
+    Header always set Access-Control-Allow-Methods "*"
+    
+    # Allow all headers - echo back what client requests
+    Header always set Access-Control-Allow-Headers "%{HTTP_ACCESS_CONTROL_REQUEST_HEADERS}e" env=CORS
+    
+    # Allow credentials
+    Header always set Access-Control-Allow-Credentials "true"
+    
+    # Expose all headers
+    Header always set Access-Control-Expose-Headers "*"
+    
+    # Set CORS environment variable for header echoing
+    SetEnvIfNoCase ^Access-Control-Request-Headers$ "(.*)" CORS=$1
 </IfModule>
 
-# Handle Preflight OPTIONS requests
+# Handle Preflight OPTIONS requests - return 200 immediately
 RewriteEngine On
 RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^(.*)$ $1 [R=200,L]
