@@ -33,6 +33,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payload = json_decode(file_get_contents('php://input'), true);
     $action = $_GET['action'] ?? 'create_reservation'; // Default action if not specified
 
+    // Map field names to match external API expectations
+    if ($action === 'create_reservation') {
+        // Transform field names to match external API
+        $mappedPayload = [];
+        
+        // Required fields mapping
+        if (isset($payload['restaurant_id'])) {
+            $mappedPayload['restaurant_id'] = $payload['restaurant_id'];
+        }
+        if (isset($payload['reservation_date'])) {
+            $mappedPayload['date'] = $payload['reservation_date'];
+        }
+        if (isset($payload['reservation_time'])) {
+            $mappedPayload['time'] = $payload['reservation_time'];
+        }
+        if (isset($payload['party_size'])) {
+            $mappedPayload['party_size'] = $payload['party_size'];
+        }
+        if (isset($payload['customer_name'])) {
+            $mappedPayload['customer_name'] = $payload['customer_name'];
+        }
+        if (isset($payload['customer_email'])) {
+            $mappedPayload['customer_email'] = $payload['customer_email'];
+        }
+        if (isset($payload['customer_phone'])) {
+            $mappedPayload['customer_phone'] = $payload['customer_phone'];
+        }
+        if (isset($payload['special_requests'])) {
+            $mappedPayload['special_requests'] = $payload['special_requests'];
+        }
+        
+        // Keep any other fields as-is
+        foreach ($payload as $key => $value) {
+            if (!isset($mappedPayload[$key]) && !in_array($key, ['reservation_date', 'reservation_time'])) {
+                $mappedPayload[$key] = $value;
+            }
+        }
+        
+        $payload = $mappedPayload;
+    }
+
     $url = $RESTAURANT_API_BASE . '?action=' . urlencode($action);
     
     $response = ExternalService::requestJson($url, 'POST', $payload, $headers);
