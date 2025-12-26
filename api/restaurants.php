@@ -31,20 +31,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Handle POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payload = json_decode(file_get_contents('php://input'), true);
-    $action = $_GET['action'] ?? 'book_table'; // Default action if not specified
+    $action = $_GET['action'] ?? 'create_reservation'; // Default action if not specified
 
     $url = $RESTAURANT_API_BASE . '?action=' . urlencode($action);
     
     $response = ExternalService::requestJson($url, 'POST', $payload, $headers);
 
     if ($response['ok']) {
-        echo json_encode($response['data']);
+        $data = $response['data'];
+        
+        // Ensure consistent response format for bookings
+        // If the external API returns data directly, wrap it properly
+        if (isset($data['status']) && isset($data['data'])) {
+            // Already in correct format, return as-is
+            echo json_encode($data);
+        } else if (isset($data['status']) && ($data['status'] === 'success' || $data['status'] === 'error')) {
+            // Has status field, return as-is
+            echo json_encode($data);
+        } else if (is_array($data) && !isset($data['status'])) {
+            // Direct response without status, wrap it
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Reservation created successfully',
+                'data' => $data
+            ]);
+        } else {
+            // Return as-is if already properly formatted
+            echo json_encode($data);
+        }
     } else {
         http_response_code($response['status'] ?: 500);
+        $errorData = $response['data'] ?? null;
+        $errorMessage = $response['error'] ?? 'External service error';
+        
+        // Extract error message from nested error structure if present
+        if (is_array($errorData) && isset($errorData['error']['message'])) {
+            $errorMessage = $errorData['error']['message'];
+        } else if (is_array($errorData) && isset($errorData['message'])) {
+            $errorMessage = $errorData['message'];
+        }
+        
         echo json_encode([
             'status' => 'error',
-            'message' => $response['error'] ?: 'External service error',
-            'details' => $response['data']
+            'message' => $errorMessage,
+            'details' => $errorData
         ]);
     }
     exit;

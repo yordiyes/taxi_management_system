@@ -200,17 +200,27 @@ async function handleRestaurantBooking(e) {
   };
 
   try {
-    const res = await fetchRestaurantApi("book_table", "POST", bookingData);
+    const res = await fetchRestaurantApi("create_reservation", "POST", bookingData);
     
     const messageDiv = document.getElementById("restaurant-booking-message");
     if (messageDiv) {
       messageDiv.style.display = "block";
-      if (res.status === "success") {
+      
+      // Handle different response formats
+      const isSuccess = res.status === "success" || 
+                       (res.data && (res.data.id || res.data.reservation_id || res.data.confirmation)) ||
+                       (res.confirmation || res.reservation_id);
+      
+      if (isSuccess) {
+        const reservationId = res.data?.id || res.data?.reservation_id || res.data?.confirmation || 
+                             res.confirmation || res.reservation_id || res.id || 'N/A';
+        const status = res.data?.status || res.status || 'confirmed';
+        
         messageDiv.innerHTML = `
           <div class="alert alert-success">
             <strong>Reservation Confirmed!</strong><br>
-            Reservation ID: ${res.data.id}<br>
-            Status: ${res.data.status}
+            Reservation ID: ${reservationId}<br>
+            Status: ${status}
           </div>
         `;
         document.getElementById("restaurant-booking-form").reset();
@@ -219,17 +229,33 @@ async function handleRestaurantBooking(e) {
           messageDiv.style.display = "none";
         }, 3000);
       } else {
+        // Extract error message from different possible locations
+        const errorMsg = res.message || 
+                        res.error?.message || 
+                        res.details?.error?.message ||
+                        res.error ||
+                        "Reservation failed. Please try again.";
+        
         messageDiv.innerHTML = `
           <div class="alert alert-error">
             <strong>Reservation Failed</strong><br>
-            ${res.message}
+            ${errorMsg}
           </div>
         `;
       }
     }
   } catch (error) {
     console.error("Booking error:", error);
-    alert("An error occurred while processing your reservation.");
+    const messageDiv = document.getElementById("restaurant-booking-message");
+    if (messageDiv) {
+      messageDiv.style.display = "block";
+      messageDiv.innerHTML = `
+        <div class="alert alert-error">
+          <strong>Reservation Failed</strong><br>
+          ${error.message || "An error occurred while processing your reservation. Please try again."}
+        </div>
+      `;
+    }
   } finally {
     btn.innerHTML = originalText;
     btn.disabled = false;
