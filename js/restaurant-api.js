@@ -73,19 +73,19 @@ async function loadRestaurants() {
           <div class="card-image">
             <img src="${restaurant.image_url || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'}" alt="${restaurant.name}" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'">
             <div class="card-badge">
-              <span>${restaurant.cuisine_type}</span>
+              <span>${restaurant.cuisine_type || 'Restaurant'}</span>
             </div>
           </div>
           <div class="card-content">
             <h3 class="card-title">${restaurant.name}</h3>
             <p class="card-description">
-              <span class="location-icon">í³</span> ${restaurant.address}
+              <span class="location-icon">ï¿½ï¿½ï¿½</span> ${restaurant.address}
             </p>
             <div class="features-list mb-4">
-              <span class="feature-item">â­ ${restaurant.rating} (${restaurant.review_count} reviews)</span>
-              <span class="feature-item">í²° ${restaurant.price_range}</span>
+              <span class="feature-item">â­ ${restaurant.rating || 'N/A'} (${restaurant.review_count || 0} reviews)</span>
+              <span class="feature-item">ï¿½ï¿½ï¿½ ${restaurant.price_range}</span>
             </div>
-            <button onclick="openRestaurantBookingForm(${restaurant.id}, '${restaurant.name}')" class="btn btn-primary full-width">
+            <button onclick="openRestaurantBookingForm(${restaurant.id}, '${String(restaurant.name).replace(/'/g, "\\'")}')" class="btn btn-primary full-width">
               Reserve Table
             </button>
           </div>

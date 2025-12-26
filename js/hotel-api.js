@@ -86,7 +86,7 @@ async function loadHotels() {
             hotel.name
           }" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'">
             <div class="card-badge">
-              <span>${hotel.stars} ★</span>
+              <span>${hotel.stars || 'N/A'} ★</span>
             </div>
           </div>
           <div class="card-content">
@@ -101,7 +101,7 @@ async function loadHotels() {
             }</p>
             <div class="card-footer">
               <button onclick="loadHotelRooms(${hotel.id}, '${
-            hotel.name
+            String(hotel.name).replace(/'/g, "\\'")
           }')" class="btn btn-primary full-width">
                 View Rooms
               </button>
@@ -187,7 +187,7 @@ async function loadHotelRooms(hotelId, hotelName) {
               }
             </div>
             <button onclick="openHotelBookingForm(${hotelId}, ${room.id}, '${
-            room.room_type_name
+            String(room.room_type_name).replace(/'/g, "\\'")
           }', ${room.base_price})" 
                     class="btn btn-primary full-width" 
                     ${!room.is_available ? "disabled" : ""}>
