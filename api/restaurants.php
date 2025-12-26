@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mappedPayload['time'] = $payload['reservation_time'];
         }
         if (isset($payload['party_size'])) {
-            $mappedPayload['party_size'] = $payload['party_size'];
+            $mappedPayload['guests'] = $payload['party_size'];
         }
         if (isset($payload['customer_name'])) {
             $mappedPayload['customer_name'] = $payload['customer_name'];
@@ -63,10 +63,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($payload['special_requests'])) {
             $mappedPayload['special_requests'] = $payload['special_requests'];
         }
+        // Map service_reference to external_booking_id if present
+        if (isset($payload['service_reference'])) {
+            $mappedPayload['external_booking_id'] = $payload['service_reference'];
+        }
         
-        // Keep any other fields as-is
+        // Keep any other fields as-is (excluding already mapped ones)
         foreach ($payload as $key => $value) {
-            if (!isset($mappedPayload[$key]) && !in_array($key, ['reservation_date', 'reservation_time'])) {
+            if (!isset($mappedPayload[$key]) && !in_array($key, ['reservation_date', 'reservation_time', 'party_size', 'service_reference'])) {
                 $mappedPayload[$key] = $value;
             }
         }
