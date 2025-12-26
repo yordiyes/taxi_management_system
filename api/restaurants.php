@@ -61,7 +61,31 @@ if (!empty($queryParams)) {
 $response = ExternalService::requestJson($url, 'GET', null, $headers);
 
 if ($response['ok']) {
-    echo json_encode($response['data']);
+    $data = $response['data'];
+    
+    // Ensure consistent response format
+    // If the external API returns data directly, wrap it properly
+    if (isset($data['status']) && isset($data['data'])) {
+        // Already in correct format, return as-is
+        echo json_encode($data);
+    } else if (isset($data['status']) && isset($data['restaurants'])) {
+        // Has status but restaurants array, ensure data field exists
+        echo json_encode([
+            'status' => $data['status'],
+            'message' => $data['message'] ?? 'Restaurants retrieved successfully',
+            'data' => $data['restaurants'] ?? $data
+        ]);
+    } else if (is_array($data) && !isset($data['status'])) {
+        // Direct array of restaurants, wrap it
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Restaurants retrieved successfully',
+            'data' => $data
+        ]);
+    } else {
+        // Return as-is if already properly formatted
+        echo json_encode($data);
+    }
 } else {
     http_response_code($response['status'] ?: 500);
     echo json_encode([

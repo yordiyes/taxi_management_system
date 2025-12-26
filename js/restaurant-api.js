@@ -62,13 +62,31 @@ async function loadRestaurants() {
   try {
     const res = await fetchRestaurantApi("restaurants");
     
+    // Handle different response formats
+    let restaurants = null;
+    
+    // Check if response has nested data structure
     if (res.status === "success" && res.data) {
-      if (res.data.length === 0) {
-        list.innerHTML = '<p class="text-muted">No restaurants found.</p>';
-        return;
-      }
-      
-      list.innerHTML = res.data.map(restaurant => `
+      restaurants = Array.isArray(res.data) ? res.data : (res.data.restaurants || res.data.data || []);
+    } 
+    // Check if response is directly an array
+    else if (Array.isArray(res)) {
+      restaurants = res;
+    }
+    // Check if response has restaurants array at root
+    else if (res.restaurants && Array.isArray(res.restaurants)) {
+      restaurants = res.restaurants;
+    }
+    // Check if response.data is an array directly (without status field)
+    else if (res.data && Array.isArray(res.data)) {
+      restaurants = res.data;
+    }
+    
+    // Debug: log the response to see what we're getting
+    console.log('Restaurant API Response:', res);
+    
+    if (restaurants && Array.isArray(restaurants) && restaurants.length > 0) {
+      list.innerHTML = restaurants.map(restaurant => `
         <div class="card service-card">
           <div class="card-image">
             <img src="${restaurant.image_url || 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'}" alt="${restaurant.name}" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'">
@@ -91,11 +109,16 @@ async function loadRestaurants() {
           </div>
         </div>
       `).join("");
+    } else if (restaurants && Array.isArray(restaurants) && restaurants.length === 0) {
+      list.innerHTML = '<p class="text-muted">No restaurants found.</p>';
     } else {
-      list.innerHTML = `<p class="error-message">Failed to load restaurants: ${res.message || "Unknown error"}</p>`;
+      // Log the actual response for debugging
+      console.error('Unexpected restaurant API response format:', res);
+      list.innerHTML = `<p class="error-message">Failed to load restaurants: ${res.message || "Unexpected response format. Check console for details."}</p>`;
     }
   } catch (error) {
-    list.innerHTML = `<p class="error-message">Error loading restaurants. Please try again later.</p>`;
+    console.error('Error loading restaurants:', error);
+    list.innerHTML = `<p class="error-message">Error loading restaurants: ${error.message || "Please try again later."}</p>`;
   }
 }
 
