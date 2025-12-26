@@ -47,11 +47,24 @@
                 </div>
                 <div class="form-group">
                     <label for="role">Account Type</label>
-                    <select id="role" class="form-control">
+                    <select id="role" class="form-control" onchange="toggleDriverFields()">
                         <option value="customer">Customer</option>
+                        <option value="driver">Driver</option>
                         <option value="manager">Service Manager</option>
                         <option value="admin">Administrator</option>
                     </select>
+                </div>
+                
+                <!-- Driver-specific fields -->
+                <div id="driver-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="license_number">License Number</label>
+                        <input type="text" id="license_number" class="form-control" placeholder="Enter your driver's license number">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; padding: 1rem;">Create Account</button>
@@ -67,6 +80,23 @@
     <script>
         document.addEventListener('DOMContentLoaded', updateNav);
 
+        function toggleDriverFields() {
+            const role = document.getElementById('role').value;
+            const driverFields = document.getElementById('driver-fields');
+            const licenseInput = document.getElementById('license_number');
+            const phoneInput = document.getElementById('phone');
+            
+            if (role === 'driver') {
+                driverFields.style.display = 'block';
+                licenseInput.required = true;
+                phoneInput.required = true;
+            } else {
+                driverFields.style.display = 'none';
+                licenseInput.required = false;
+                phoneInput.required = false;
+            }
+        }
+
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const username = document.getElementById('username').value;
@@ -75,10 +105,26 @@
             const role = document.getElementById('role').value;
             const messageDiv = document.getElementById('message');
 
+            // Collect driver-specific fields if driver role
+            const registrationData = { username, email, password, role };
+            if (role === 'driver') {
+                const license_number = document.getElementById('license_number').value;
+                const phone = document.getElementById('phone').value;
+                
+                if (!license_number || !phone) {
+                    messageDiv.innerHTML = `<div style="color: var(--danger); background: #fee2e2; padding: 0.75rem; border-radius: var(--radius); margin-bottom: 1rem;">Please fill in license number and phone number for driver registration.</div>`;
+                    return;
+                }
+                
+                registrationData.license_number = license_number;
+                registrationData.phone = phone;
+            }
+
             try {
-                await apiFetch('auth.php?action=register', 'POST', { username, email, password, role });
+                await apiFetch('auth.php?action=register', 'POST', registrationData);
                 messageDiv.innerHTML = `<div style="color: var(--success); background: #d1fae5; padding: 0.75rem; border-radius: var(--radius); margin-bottom: 1rem;">Registration successful! <a href="login.html" style="font-weight: bold;">Login now</a></div>`;
                 document.getElementById('register-form').reset();
+                toggleDriverFields(); // Reset driver fields visibility
             } catch (error) {
                 messageDiv.innerHTML = `<div style="color: var(--danger); background: #fee2e2; padding: 0.75rem; border-radius: var(--radius); margin-bottom: 1rem;">${error.message}</div>`;
             }

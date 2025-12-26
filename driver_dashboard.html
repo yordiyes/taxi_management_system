@@ -152,7 +152,12 @@
                 `).join('');
             } catch (e) { 
                 console.error(e);
-                document.getElementById('vehicles-list').innerHTML = '<div class="glass-card"><p class="text-muted">Error loading vehicles. Please try again.</p></div>';
+                const errorMsg = e.message || 'Error loading vehicles';
+                if (errorMsg.includes('Driver profile not found') || errorMsg.includes('not found')) {
+                    document.getElementById('vehicles-list').innerHTML = '<div class="glass-card"><p class="text-muted" style="color: #ef4444;">Driver profile not found. Please contact administrator to set up your driver account.</p></div>';
+                } else {
+                    document.getElementById('vehicles-list').innerHTML = `<div class="glass-card"><p class="text-muted">Error loading vehicles: ${errorMsg}. Please try again.</p></div>`;
+                }
             }
         }
 
@@ -249,7 +254,12 @@
                 }).join('');
             } catch (e) { 
                 console.error(e);
-                document.getElementById('bookings-list').innerHTML = '<div class="glass-card"><p class="text-muted">Error loading bookings. Please try again.</p></div>';
+                const errorMsg = e.message || 'Error loading bookings';
+                if (errorMsg.includes('Driver profile not found') || errorMsg.includes('not found')) {
+                    document.getElementById('bookings-list').innerHTML = '<div class="glass-card"><p class="text-muted" style="color: #ef4444;">Driver profile not found. Please contact administrator to set up your driver account.</p></div>';
+                } else {
+                    document.getElementById('bookings-list').innerHTML = `<div class="glass-card"><p class="text-muted">Error loading bookings: ${errorMsg}. Please try again.</p></div>`;
+                }
             }
         }
 

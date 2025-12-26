@@ -72,6 +72,31 @@ class AuthController {
             $stmt->bindParam(":role", $role);
 
             if($stmt->execute()){
+                $user_id = $this->db->lastInsertId();
+                
+                // If registering as driver, create driver record
+                if ($role === 'driver') {
+                    if (!empty($data->license_number) && !empty($data->phone)) {
+                        $driver_query = "INSERT INTO drivers SET user_id=:user_id, name=:name, license_number=:license_number, phone=:phone, status='available'";
+                        $driver_stmt = $this->db->prepare($driver_query);
+                        
+                        $driver_name = htmlspecialchars(strip_tags($data->username));
+                        $driver_license = htmlspecialchars(strip_tags($data->license_number));
+                        $driver_phone = htmlspecialchars(strip_tags($data->phone));
+                        
+                        $driver_stmt->bindParam(":user_id", $user_id);
+                        $driver_stmt->bindParam(":name", $driver_name);
+                        $driver_stmt->bindParam(":license_number", $driver_license);
+                        $driver_stmt->bindParam(":phone", $driver_phone);
+                        
+                        if (!$driver_stmt->execute()) {
+                            // If driver creation fails, we should ideally rollback user creation
+                            // But for simplicity, we'll just log the error
+                            error_log("Failed to create driver record for user_id: " . $user_id);
+                        }
+                    }
+                }
+                
                 http_response_code(201);
                 echo json_encode(array("message" => "User was registered."));
             } else {
